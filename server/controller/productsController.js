@@ -107,3 +107,39 @@ export async function updateProduct(req, res) {
     res.status(500).json({ errore: "errore durante l'aggiornamento dei dati" });
   }
 }
+
+// DELETE elimina un prodotto
+export async function deleteProduct(req, res) {
+  const { id } = req.params;
+  const idNumber = Number(id);
+
+  // verifico se ID è valido
+  if (!Number.isInteger(idNumber) || idNumber <= 0) {
+    return res.status(400).json({ errore: "impossibile trovare ID" });
+  }
+
+  try {
+    // verifico che la riga esista
+    const [existing] = await pool.query(
+      "SELECT id FROM prodotti WHERE id = ?",
+      [idNumber]
+    );
+    if (existing.length === 0) {
+      return res.status(404).json({ errore: "prodotto non trovato" });
+    }
+
+    const [result] = await pool.query("DELETE FROM prodotti WHERE id = ?", [
+      idNumber,
+    ]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ errore: "prodotto non trovato" });
+    }
+
+    res.status(201).json({ messaggio: "rimozione avvenuta con successo" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ errore: "errore durante la cancellazione del prodotto" });
+  }
+}
