@@ -1,4 +1,6 @@
 import pool from "../db/db.js";
+import { z } from "zod";
+import { productSchema } from "../schemas/productSchema.js";
 
 // seleziona tutti i prodotti
 export async function getAllProducts(req, res) {
@@ -15,10 +17,11 @@ export async function getAllProducts(req, res) {
 
 // inserisci nuovo prodotto
 export async function addNewProduct(req, res) {
-  const { nome, descrizione, brandId, prezzoAcquisto, prezzoVendita } =
-    req.body;
-
   try {
+    const parsedData = productSchema.parse(req.body);
+    const { nome, descrizione, brandId, prezzoAcquisto, prezzoVendita } =
+      parsedData;
+
     const query =
       "INSERT INTO prodotti(nome, descrizione, brand_id, prezzo_acquisto, prezzo_vendita) VALUES(?, ?, ?, ?, ?)";
     const values = [nome, descrizione, brandId, prezzoAcquisto, prezzoVendita];
@@ -28,6 +31,11 @@ export async function addNewProduct(req, res) {
       .status(201)
       .json({ messaggio: "prodotto creato", productId: result.insertId });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res
+        .status(400)
+        .json({ errore: "dati non validi", dettagli: error.errors });
+    }
     console.error(error);
     res
       .status(500)
