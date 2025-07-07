@@ -119,15 +119,6 @@ export async function deleteProduct(req, res) {
   }
 
   try {
-    // verifico che la riga esista
-    const [existing] = await pool.query(
-      "SELECT id FROM prodotti WHERE id = ?",
-      [idNumber]
-    );
-    if (existing.length === 0) {
-      return res.status(404).json({ errore: "prodotto non trovato" });
-    }
-
     const [result] = await pool.query("DELETE FROM prodotti WHERE id = ?", [
       idNumber,
     ]);
@@ -135,7 +126,7 @@ export async function deleteProduct(req, res) {
       return res.status(404).json({ errore: "prodotto non trovato" });
     }
 
-    res.status(201).json({ messaggio: "rimozione avvenuta con successo" });
+    res.status(200).json({ messaggio: "rimozione avvenuta con successo" });
   } catch (error) {
     console.error(error);
     res
