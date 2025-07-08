@@ -9,7 +9,7 @@ export function buildInsertQuery(tableName, fields) {
 }
 
 //  query per update
-// prende il nome della tabella ed array dei valori per update
+// prende il nome della tabella ed array dei campi per update
 // la passo come primo argomento di pool.query e come secondo arg passo array di valori
 export function buildUpdateQuery(tableName, fields) {
   const valuesToUpdate = fields.map((field) => `${field} = ?`).join(", ");
