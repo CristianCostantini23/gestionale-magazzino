@@ -13,6 +13,7 @@ export async function recordExistById(table, id) {
 // controlla se sono presenti duplicati su campi UNIQUE di altre righe
 // utilizzabile sia per le INSERT che UPDATE
 // ritorna array vuoto se non ci sono duplicati oppure un array con i duplicati
+// table = stringa nome tabella; fields = oggetto nome_colonna: valore; excludedId = id da escludere per update
 export async function checkUniqueDuplicates(table, fields, excludedId = null) {
   const duplicatesFields = [];
 

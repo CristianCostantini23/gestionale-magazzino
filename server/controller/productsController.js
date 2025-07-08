@@ -1,17 +1,26 @@
 import pool from "../db/db.js";
 import { z } from "zod";
 import { productSchema } from "../schemas/productSchema.js";
+import {
+  recordExistById,
+  checkUniqueDuplicates,
+  handleServerError,
+  handleZodError,
+} from "../utils/dataValidation.js";
+import {
+  buildInsertQuery,
+  buildUpdateQuery,
+  buildDeleteQuery,
+  buildGetAllQuery,
+} from "../utils/queryBuilder.js";
 
 // GET seleziona tutti i prodotti
 export async function getAllProducts(req, res) {
   try {
-    const [rows] = await pool.query("SELECT * FROM prodotti");
+    const [rows] = await pool.query(buildGetAllQuery("prodotti"));
     res.json(rows);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ error: "Errore durante il caricamento dei prodotti" });
+    handleServerError(res, error, "Errore durante il caricamento dei prodotti");
   }
 }
 
@@ -22,8 +31,22 @@ export async function addNewProduct(req, res) {
     const { nome, descrizione, brandId, prezzoAcquisto, prezzoVendita } =
       parsedData;
 
-    const query =
-      "INSERT INTO prodotti(nome, descrizione, brand_id, prezzo_acquisto, prezzo_vendita) VALUES(?, ?, ?, ?, ?)";
+    // verifico di non inserire duplicati su campi UNIQUE
+    const duplicateFields = await checkUniqueDuplicates("prodotti", { nome });
+    if (duplicateFields.length > 0) {
+      return res
+        .status(400)
+        .json({ errore: "valori duplicati", duplicati: duplicateFields });
+    }
+
+    const query = buildInsertQuery("prodotti", [
+      "nome",
+      "descrizione",
+      "brand_id",
+      "prezzo_acquisto",
+      "prezzo_vendita",
+    ]);
+
     const values = [nome, descrizione, brandId, prezzoAcquisto, prezzoVendita];
 
     const [result] = await pool.query(query, values);
@@ -32,34 +55,20 @@ export async function addNewProduct(req, res) {
       .json({ messaggio: "prodotto creato", productId: result.insertId });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res
-        .status(400)
-        .json({ errore: "dati non validi", dettagli: error.errors });
+      return handleZodError(res, error);
     }
-    console.error(error);
-    res
-      .status(500)
-      .json({ errore: "errore durante la creazione del prodotto" });
+    handleServerError(res, error, "errore durante la creazione del prodotto");
   }
 }
 
 // PUT mofifica un prodotto
 export async function updateProduct(req, res) {
-  const { id } = req.params;
-  const idNumber = Number(id);
-
-  // controllo se id è valido
-  if (!Number.isInteger(idNumber) || idNumber <= 0) {
-    return res.status(400).json({ errore: "impossibile trovare ID" });
-  }
+  const { id } = req;
 
   try {
     // controllo se la riga esiste
-    const [existing] = await pool.query(
-      "SELECT id FROM prodotti WHERE id = ?",
-      [idNumber]
-    );
-    if (existing.length === 0) {
+    const rowExists = await recordExistById("prodotti", id);
+    if (!rowExists) {
       return res.status(404).json({ errore: "prodotto non trovato" });
     }
 
@@ -68,19 +77,26 @@ export async function updateProduct(req, res) {
     const { nome, descrizione, brandId, prezzoAcquisto, prezzoVendita } =
       parsedData;
 
-    // controllo unicità del nome prodotto
-    const [duplicates] = await pool.query(
-      "SELECT id FROM prodotti WHERE nome = ? AND id != ?",
-      [nome, idNumber]
+    // controllo unicità dei campi UNIQUE
+    const duplicateFields = await checkUniqueDuplicates(
+      "prodotti",
+      { nome },
+      id
     );
-    if (duplicates.length > 0) {
+    if (duplicateFields.length > 0) {
       return res
         .status(400)
-        .json({ errore: "esiste già un prodotto con questo nome" });
+        .json({ errore: "valori duplicati", duplicati: duplicateFields });
     }
 
-    const query =
-      "UPDATE prodotti SET nome = ?, descrizione = ?, brand_id = ?, prezzo_acquisto = ?, prezzo_vendita = ? WHERE id = ?";
+    const query = buildUpdateQuery("prodotti", [
+      "nome",
+      "descrizione",
+      "brand_id",
+      "prezzo_acquisto",
+      "prezzo_vendita",
+    ]);
+
     const values = [
       nome,
       descrizione,
@@ -99,38 +115,34 @@ export async function updateProduct(req, res) {
     res.status(200).json({ messaggio: "prodotto aggiornato con successo" });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res
-        .status(400)
-        .json({ errore: "dati non validi", dettagli: error.errors });
+      return handleZodError(res, error);
     }
-    console.error(error);
-    res.status(500).json({ errore: "errore durante l'aggiornamento dei dati" });
+    handleServerError(res, error, "errore durante l'aggiornamento dei dati");
   }
 }
 
 // DELETE elimina un prodotto
 export async function deleteProduct(req, res) {
-  const { id } = req.params;
-  const idNumber = Number(id);
-
-  // verifico se ID è valido
-  if (!Number.isInteger(idNumber) || idNumber <= 0) {
-    return res.status(400).json({ errore: "impossibile trovare ID" });
-  }
+  const { id } = req;
 
   try {
-    const [result] = await pool.query("DELETE FROM prodotti WHERE id = ?", [
-      idNumber,
-    ]);
+    // controllo se la riga esiste
+    const rowExists = await recordExistById("prodotti", id);
+    if (!rowExists) {
+      return res.status(404).json({ errore: "prodotto non trovato" });
+    }
+
+    const [result] = await pool.query(buildDeleteQuery("prodotti"), [id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ errore: "prodotto non trovato" });
     }
 
     res.status(200).json({ messaggio: "rimozione avvenuta con successo" });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ errore: "errore durante la cancellazione del prodotto" });
+    handleServerError(
+      res,
+      error,
+      "errore durante la cancellazione del prodotto"
+    );
   }
 }

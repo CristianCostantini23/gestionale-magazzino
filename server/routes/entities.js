@@ -5,12 +5,13 @@ import {
   deleteEntity,
   updateEntity,
 } from "../controller/entitiesController.js";
+import { checkIdMiddleware } from "../middleware/checkIdMiddleware.js";
 
 const entityRoutes = express.Router();
 
 entityRoutes.get("/", getAllEntities);
 entityRoutes.post("/", addEntity);
-entityRoutes.put("/:id", updateEntity);
-entityRoutes.delete("/:id", deleteEntity);
+entityRoutes.put("/:id", checkIdMiddleware, updateEntity);
+entityRoutes.delete("/:id", checkIdMiddleware, deleteEntity);
 
 export default entityRoutes;

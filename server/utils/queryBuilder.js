@@ -1,4 +1,5 @@
-// crea la query per insert
+//  query per insert
+// prende il nome della tabella ed array dei campi per insert
 // la passo come primo argomento di pool.query e come secondo arg passo array di valori
 export function buildInsertQuery(tableName, fields) {
   const placeHolders = fields.map(() => "?").join(", ");
@@ -7,9 +8,24 @@ export function buildInsertQuery(tableName, fields) {
   )}) VALUES (${placeHolders})`;
 }
 
-// crea la query per update
+//  query per update
+// prende il nome della tabella ed array dei valori per update
 // la passo come primo argomento di pool.query e come secondo arg passo array di valori
 export function buildUpdateQuery(tableName, fields) {
   const valuesToUpdate = fields.map((field) => `${field} = ?`).join(", ");
   return `UPDATE \`${tableName}\` SET ${valuesToUpdate} WHERE id = ?`;
+}
+
+// query per delete
+// prende il nome della tabella ed id della riga da cancellare
+// la passo come primo argomento di pool.query
+export function buildDeleteQuery(tableName) {
+  return `DELETE FROM \`${tableName}\` WHERE id = ?`;
+}
+
+// query per get all
+// prende il nome della tabella
+// la passo come primo argomento di pool.query
+export function buildGetAllQuery(tableName) {
+  return `SELECT * FROM \`${tableName}\``;
 }
