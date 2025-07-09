@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import productRoutes from "./routes/products.js";
 import entityRoutes from "./routes/entities.js";
+import brandsRouter from "./routes/brands.js";
+import suppliersRouter from "./routes/suppliers.js";
 
 dotenv.config();
 
@@ -13,6 +15,8 @@ app.use(express.json());
 
 app.use("/api/products", productRoutes);
 app.use("/api/entities", entityRoutes);
+app.use("/api/brands", brandsRouter);
+app.use("/api/suppliers", suppliersRouter);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

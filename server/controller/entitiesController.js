@@ -12,12 +12,25 @@ import {
   buildUpdateQuery,
   buildDeleteQuery,
   buildGetAllQuery,
+  buildGetByIdQuery,
 } from "../utils/queryBuilder.js";
 
 // GET ricevi tutte le entità
 export async function getAllEntities(req, res) {
   try {
     const [rows] = await pool.query(buildGetAllQuery("entita"));
+    res.status(200).json(rows);
+  } catch (error) {
+    handleServerError(res, error, "errore durante il caricamento delle entità");
+  }
+}
+
+// GET ricevi entità per ID
+export async function getEntityById(req, res) {
+  const { id } = req;
+
+  try {
+    const [rows] = await pool.query(buildGetByIdQuery("entita"), [id]);
     res.status(200).json(rows);
   } catch (error) {
     handleServerError(res, error, "errore durante il caricamento delle entità");

@@ -29,3 +29,10 @@ export function buildDeleteQuery(tableName) {
 export function buildGetAllQuery(tableName) {
   return `SELECT * FROM \`${tableName}\``;
 }
+
+// query per get by ID
+// prende il nome della tabella
+// la passo come primo argomento di pool.query e come secondo l'id del record
+export function buildGetByIdQuery(tableName) {
+  return `SELECT * FROM \`${tableName}\` WHERE id = ?`;
+}

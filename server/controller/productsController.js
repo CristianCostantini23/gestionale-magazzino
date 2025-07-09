@@ -12,12 +12,25 @@ import {
   buildUpdateQuery,
   buildDeleteQuery,
   buildGetAllQuery,
+  buildGetByIdQuery,
 } from "../utils/queryBuilder.js";
 
 // GET seleziona tutti i prodotti
 export async function getAllProducts(req, res) {
   try {
     const [rows] = await pool.query(buildGetAllQuery("prodotti"));
+    res.json(rows);
+  } catch (error) {
+    handleServerError(res, error, "Errore durante il caricamento dei prodotti");
+  }
+}
+
+// GET seleziona prodotto per ID
+export async function getProductById(req, res) {
+  const { id } = req;
+
+  try {
+    const [rows] = await pool.query(buildGetByIdQuery("prodotti"), [id]);
     res.json(rows);
   } catch (error) {
     handleServerError(res, error, "Errore durante il caricamento dei prodotti");
