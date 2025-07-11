@@ -4,6 +4,8 @@ import productRoutes from "./routes/products.js";
 import entityRoutes from "./routes/entities.js";
 import brandsRouter from "./routes/brands.js";
 import suppliersRouter from "./routes/suppliers.js";
+import incomingStockRouter from "./routes/incomingStock.js";
+import stockMovementsRouter from "./routes/stockMovements.js";
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/entities", entityRoutes);
 app.use("/api/brands", brandsRouter);
 app.use("/api/suppliers", suppliersRouter);
+app.use("/api/incoming-stock", incomingStockRouter);
+app.use("/api/stock-movements", stockMovementsRouter);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
