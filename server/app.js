@@ -6,6 +6,7 @@ import brandsRouter from "./routes/brands.js";
 import suppliersRouter from "./routes/suppliers.js";
 import incomingStockRouter from "./routes/incomingStock.js";
 import stockMovementsRouter from "./routes/stockMovements.js";
+import salesRoute from "./routes/sales.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use("/api/brands", brandsRouter);
 app.use("/api/suppliers", suppliersRouter);
 app.use("/api/incoming-stock", incomingStockRouter);
 app.use("/api/stock-movements", stockMovementsRouter);
+app.use("/api/sales", salesRoute);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
