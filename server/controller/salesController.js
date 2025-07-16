@@ -94,7 +94,7 @@ export async function createSale(req, res) {
   }
 }
 
-// GET ricevo i dettagli di una singola vendita per id
+// GET ricevo i dettagli di una singola vendita per ID
 export async function getSaleById(req, res) {
   const { id } = req;
 
@@ -152,7 +152,7 @@ export async function getAllSales(req, res) {
       ORDER BY v.data_vendita DESC
     `);
 
-    res.status(200).json({ vendite: sales });
+    res.status(200).json(sales);
   } catch (error) {
     handleServerError(
       res,
