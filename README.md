@@ -15,33 +15,37 @@ Questo progetto è un gestionale per monitorare prodotti, entità, fornitori, ve
 - 🌐 **Axios** – HTTP client per comunicazione con API  
 - 🛠️ **Node.js/Express** - lato backend
 
-🏗️ ## Struttura del Progetto
+## 🏗️ Struttura del Progetto
 
-Gestionale magazzino/
-├── server/               # cartella con codice backend
-|    ├── controller/      # tutti i controller per le tutte le rotte
-|    ├── db/              # codice per connettersi al db 
-|    ├── middleware/      # funzioni di middleware  
-|    ├── routes/          # configurazione di tutte le rotte 
-|    ├── schemas/         # schemas zod per validare i dati ricevuti
-|    ├── utils/           # funzioni per validare e conforntare dati e query builder
-|    ├── .env             # variabili di ambiente
-|    └── app.js           # configurazione express e connessione alla PORT
-├── src/                  # cartella con codice frontend
-|    ├── components/      # tutti i componenti riutilizzabili 
-|    ├── pages/           # tutte le pagine che compongono la SPA dove si passano i props ai componenti
-|    ├── store/           # cartella con il codice per configurare lo store Redux
-|    |    ├── slices/     # tutte le slice Redux
-|    |    ├── utils/      # funzioni riutilizzabile che vengono usate spesso nelle slices
-|    |    └── store.js    # configurazione dello store con tutti i reducers
-|    ├── App.jsx          # componente per homepage
-|    ├── Main.jsx         # configurazione React Router e gestione delle rotte visitabili
-|    └── style.css        # file CSS per configurare tailwind
+```
+gestionale-magazzino/
+├── server/                   # Cartella con codice backend
+│   ├── controller/          # Tutti i controller per le rotte
+│   ├── db/                  # Codice per connettersi al database
+│   ├── middleware/          # Funzioni di middleware
+│   ├── routes/              # Configurazione di tutte le rotte
+│   ├── schemas/             # Schemi Zod per validare i dati ricevuti
+│   ├── utils/               # Funzioni per validare/confrontare dati e query builder
+│   ├── .env                 # Variabili di ambiente
+│   └── app.js               # Configurazione Express e connessione alla porta
+│
+├── src/                     # Cartella con codice frontend
+│   ├── components/          # Componenti riutilizzabili (Form, Lista, Sidebar, ecc.)
+│   ├── pages/               # Pagine della SPA che utilizzano i componenti
+│   ├── store/               # Configurazione Redux
+│   │   ├── slices/          # Slice Redux per ogni entità (prodotti, fornitori, ecc.)
+│   │   ├── utils/           # Funzioni riutilizzabili usate dalle slice
+│   │   └── store.js         # Configurazione Redux store
+│   ├── App.jsx              # Componente principale dell'app
+│   ├── Main.jsx             # Configurazione React Router
+│   └── style.css            # Configurazione Tailwind CSS
+│
 ├── desktop.ini
-├── eslint.config.js      # configurazione di eslint
-├── index.html            # entry point
-├── package.json          # dipendenze Node.js
-└── vite.config.js        # configurazione di Vite
+├── eslint.config.js         # Configurazione ESLint
+├── index.html               # Entry point HTML
+├── package.json             # Dipendenze e script Node.js
+└── vite.config.js           # Configurazione di Vite
+```
 
 
 🚀 Funzionalità principali
