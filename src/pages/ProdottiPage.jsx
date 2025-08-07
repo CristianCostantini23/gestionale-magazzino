@@ -65,7 +65,10 @@ export default function ProdottiPage() {
         {...config}
         fields={listFields}
         foreignKeys={foreignKeys}
-        urlUpdateAction={"/prodotti"}
+        urlUpdateAction="/prodotti"
+        canDelete={true}
+        canEdit={true}
+        pageName="prodotti"
       />
     );
   if (section === "form")

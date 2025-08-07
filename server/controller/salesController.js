@@ -2,6 +2,7 @@ import pool from "../db/db.js";
 import { saleSchema } from "../schemas/salesSchema.js";
 import { handleServerError, handleZodError } from "../utils/dataValidation.js";
 import { buildGetByIdQuery, buildInsertQuery } from "../utils/queryBuilder.js";
+import z from "zod";
 
 // POST registro una nuova vendita
 export async function createSale(req, res) {
@@ -86,6 +87,7 @@ export async function createSale(req, res) {
     }
   } catch (error) {
     if (error instanceof z.ZodError) return handleZodError(res, error);
+    console.log(error);
     handleServerError(
       res,
       error,
@@ -158,6 +160,35 @@ export async function getAllSales(req, res) {
       res,
       error,
       "Impossibile recuperare la lista delle vendite"
+    );
+  }
+}
+
+// GET lista dettagliata di tutte le vendite
+export async function getAllSalesDetails(req, res) {
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        v.id AS id,
+        v.id AS vendita_id,
+        e.nome AS entita,
+        p.nome AS prodotto,
+        vp.quantità,
+        vp.prezzo_unitario,
+        v.data_vendita
+      FROM vendite v
+      JOIN entita e ON v.entita_id = e.id
+      JOIN vendita_prodotto vp ON v.id = vp.vendita_id
+      JOIN prodotti p ON vp.prodotto_id = p.id
+      ORDER BY v.data_vendita DESC, v.id
+    `);
+
+    res.status(200).json(rows);
+  } catch (error) {
+    handleServerError(
+      res,
+      error,
+      "Impossibile recuperare i dettagli delle vendite"
     );
   }
 }

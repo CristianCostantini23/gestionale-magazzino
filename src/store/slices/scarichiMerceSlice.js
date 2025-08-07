@@ -3,7 +3,7 @@ import { fetchData, postData } from "../utils/utilsCRUD.js";
 import { handleAsyncStates } from "../utils/handleAsyncStates.js";
 
 // GET ricevi tutti gli scarichi merce
-const fetchAllScarichiMerce = createAsyncThunk(
+export const fetchAllScarichiMerce = createAsyncThunk(
   "scarichiMerce/fetchAll",
   async () => {
     return await fetchData("/api/incoming-stock");
@@ -11,7 +11,7 @@ const fetchAllScarichiMerce = createAsyncThunk(
 );
 
 // GET ricevi gli scarichi merce per ID
-const fetchScarichiMerceById = createAsyncThunk(
+export const fetchScarichiMerceById = createAsyncThunk(
   "scarichiMerce/fetchById",
   async (id) => {
     return await fetchData(`/api/incoming-stock/${id}`);
@@ -19,7 +19,7 @@ const fetchScarichiMerceById = createAsyncThunk(
 );
 
 // POST crea uno scarico merce
-const postScaricoMerce = createAsyncThunk(
+export const postScaricoMerce = createAsyncThunk(
   "scarichiMerce/post",
   async (nuovoScaricoMerce, { dispatch }) => {
     await postData("/api/incoming-stock", nuovoScaricoMerce);

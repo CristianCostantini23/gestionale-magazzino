@@ -6,6 +6,8 @@ const links = [
   { to: "/brands", label: "Brands" },
   { to: "/vendite", label: "Vendite" },
   { to: "/scarichi", label: "Scarichi" },
+  { to: "/fornitori", label: "Fornitori" },
+  { to: "/entita", label: "Entità" },
 ];
 
 export default function Sidebar() {

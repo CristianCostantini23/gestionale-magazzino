@@ -8,26 +8,35 @@ import {
 import { handleAsyncStates } from "../utils/handleAsyncStates.js";
 
 // GET ricevi tutti i brands
-const fetchBrands = createAsyncThunk("brands/fetchAll", async () => {
+export const fetchBrands = createAsyncThunk("brands/fetchAll", async () => {
   return await fetchData("/api/brands");
 });
 
 // GET ricevi brand per ID
-const fetchBrandById = createAsyncThunk("brands/fetchById", async (id) => {
-  return fetchData(`/api/brands/${id}`);
-});
+export const fetchBrandById = createAsyncThunk(
+  "brands/fetchById",
+  async (id) => {
+    return fetchData(`/api/brands/${id}`);
+  }
+);
 
 // POST aggiungi brand
-const postBrand = createAsyncThunk(
+export const postBrand = createAsyncThunk(
   "brands/create",
-  async (nuovoBrand, { dispatch }) => {
-    await postData("/api/brands", nuovoBrand);
-    return dispatch(fetchBrands()).unwrap();
+  async (nuovoBrand, { dispatch, rejectWithValue }) => {
+    try {
+      await postData("/api/brands", nuovoBrand);
+      return dispatch(fetchBrands()).unwrap();
+    } catch (error) {
+      return rejectWithValue(
+        error.response.data || { errore: "Errore imprevisto" }
+      );
+    }
   }
 );
 
 // PUT aggiorna brand
-const updateBrand = createAsyncThunk(
+export const updateBrand = createAsyncThunk(
   "brands/update",
   async ({ id, data }, { dispatch }) => {
     await updateData(`/api/brands/${id}`, data);
@@ -36,11 +45,17 @@ const updateBrand = createAsyncThunk(
 );
 
 // DELETE elimina brand
-const deleteBrand = createAsyncThunk(
+export const deleteBrand = createAsyncThunk(
   "brands/delete",
-  async (id, { dispatch }) => {
-    await deleteData(`/api/brands/${id}`);
-    return dispatch(fetchBrands()).unwrap();
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await deleteData(`/api/brands/${id}`);
+      return dispatch(fetchBrands()).unwrap();
+    } catch (errore) {
+      rejectWithValue(errore.response?.data) || {
+        messaggio: "Errore sconosciuto",
+      };
+    }
   }
 );
 

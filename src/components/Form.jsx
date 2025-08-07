@@ -71,13 +71,26 @@ export default function Form({
 
     try {
       await dispatch(onSubmitAction(formData)).unwrap();
-      await dispatch(getElementAction());
       setFormData(
         fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
       );
       setStatus("success");
     } catch (error) {
-      console.error(error);
+      console.error("Errore durante la submit del form:", error);
+
+      const errData = error;
+
+      if (errData?.messaggio) {
+        setErrors({ global: errData.messaggio });
+      } else if (errData?.errore && errData?.duplicati) {
+        const lista = errData.duplicati.join(", ");
+        setErrors({ global: `ATTENZIONE! ${errData.errore}: ${lista}` });
+      } else if (errData?.errore) {
+        setErrors({ global: errData.errore });
+      } else {
+        setErrors({ global: "Errore imprevisto durante l'invio." });
+      }
+
       setStatus("error");
     }
   };
@@ -131,7 +144,7 @@ export default function Form({
       </button>
 
       {status === "success" && <p>{successMessage}</p>}
-      {status === "error" && <p>Errore durante l'invio</p>}
+      {status === "error" && <p>{errors.global}</p>}
     </form>
   );
 }

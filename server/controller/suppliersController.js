@@ -47,6 +47,8 @@ export async function getSupplierById(req, res) {
 
 // POST aggungi un fornitore
 export async function addSupplier(req, res) {
+  console.log(req.body);
+
   try {
     const parsedData = suppliersSchema.parse(req.body);
     const { nome, telefono, email } = parsedData;

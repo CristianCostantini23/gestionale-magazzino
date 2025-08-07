@@ -39,6 +39,12 @@ export function handleServerError(
   error,
   errMessage = "errore interno del server"
 ) {
+  if (error.code === "ER_ROW_IS_REFERENCED_2") {
+    return res.status(409).json({
+      messaggio:
+        "Impossibile eliminare l'elemento: esistono voci collegate in altre tabelle.",
+    });
+  }
   console.error(error);
   res.status(500).json({ errore: errMessage });
 }

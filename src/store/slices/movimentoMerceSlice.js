@@ -3,7 +3,7 @@ import { fetchData, postData } from "../utils/utilsCRUD.js";
 import { handleAsyncStates } from "../utils/handleAsyncStates.js";
 
 // GET ricevi tutti i movimenti merce
-const fetchAllmovimentiMerce = createAsyncThunk(
+export const fetchAllmovimentiMerce = createAsyncThunk(
   "movimentiMerce/fetchAll",
   async () => {
     return await fetchData("/api/stock-movements");
@@ -11,7 +11,7 @@ const fetchAllmovimentiMerce = createAsyncThunk(
 );
 
 // POST crea uno spostamento merce
-const postMovimentoMerce = createAsyncThunk(
+export const postMovimentoMerce = createAsyncThunk(
   "movimentiMerce/post",
   async (nuovoMovimento, { dispatch }) => {
     await postData("/api/stock-movements");

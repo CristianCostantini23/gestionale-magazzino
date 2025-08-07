@@ -8,42 +8,64 @@ import {
 import { handleAsyncStates } from "../utils/handleAsyncStates.js";
 
 // GET ricevi tutti i fornitori
-const fetchfornitori = createAsyncThunk("fornitori/fetchAll", async () => {
-  return await fetchData("/api/fornitori");
-});
+export const fetchfornitori = createAsyncThunk(
+  "fornitori/fetchAll",
+  async () => {
+    return await fetchData("/api/suppliers");
+  }
+);
 
 // GET ricevi fornitore per ID
-const fetchFornitoreById = createAsyncThunk(
+export const fetchFornitoreById = createAsyncThunk(
   "fornitori/fetchById",
   async (id) => {
-    return fetchData(`/api/fornitori/${id}`);
+    return fetchData(`/api/suppliers/${id}`);
   }
 );
 
 // POST aggiungi fornitore
-const postfornitore = createAsyncThunk(
+export const postfornitore = createAsyncThunk(
   "fornitori/create",
-  async (nuovoFornitore, { dispatch }) => {
-    await postData("/api/fornitori", nuovoFornitore);
-    return dispatch(fetchfornitori()).unwrap();
+  async (nuovoFornitore, { dispatch, rejectWithValue }) => {
+    try {
+      await postData("/api/suppliers", nuovoFornitore);
+      return await dispatch(fetchfornitori()).unwrap();
+    } catch (errore) {
+      // restituisci l'oggetto che React può leggere
+      return rejectWithValue(
+        errore.response?.data || { errore: "Errore imprevisto" }
+      );
+    }
   }
 );
 
 // PUT aggiorna fornitore
-const updateFornitore = createAsyncThunk(
+export const updateFornitore = createAsyncThunk(
   "fornitori/update",
-  async ({ id, data }, { dispatch }) => {
-    await updateData(`/api/fornitori/${id}`, data);
-    return dispatch(fetchfornitori()).unwrap();
+  async ({ id, data }, { dispatch, rejectWithValue }) => {
+    try {
+      await updateData(`/api/suppliers/${id}`, data);
+      return await dispatch(fetchfornitori()).unwrap();
+    } catch (errore) {
+      return rejectWithValue(
+        errore.response?.data || { errore: "Errore imprevisto" }
+      );
+    }
   }
 );
 
 // DELETE elimina fornitore
-const deleteFornitore = createAsyncThunk(
+export const deleteFornitore = createAsyncThunk(
   "fornitori/delete",
-  async (id, { dispatch }) => {
-    await deleteData(`/api/fornitori/${id}`);
-    return dispatch(fetchfornitori()).unwrap();
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await deleteData(`/api/suppliers/${id}`);
+      return dispatch(fetchfornitori()).unwrap();
+    } catch (errore) {
+      rejectWithValue(errore.response?.data) || {
+        messaggio: "Errore sconosciuto",
+      };
+    }
   }
 );
 

@@ -14,8 +14,6 @@ const app = express();
 
 app.use(express.json());
 
-// configura le routes
-
 app.use("/api/products", productRoutes);
 app.use("/api/entities", entityRoutes);
 app.use("/api/brands", brandsRouter);

@@ -1,6 +1,36 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import { useState, useEffect } from "react";
 
-export default function ConfirmModal({ open, onClose, onConfirm, message }) {
+export default function ConfirmModal({
+  open,
+  onClose,
+  onDelete,
+  elementToDelete,
+  message,
+}) {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      setErrorMessage("");
+    }
+  }, [open, elementToDelete]);
+
+  const handleConfirm = async () => {
+    try {
+      await onDelete(elementToDelete.id);
+      setErrorMessage("");
+      onClose(false);
+    } catch (error) {
+      if (error.messaggio) {
+        setErrorMessage(error.messaggio);
+        console.log(error.response?.status);
+      } else {
+        setErrorMessage("Errore durante l'eliminazione");
+      }
+    }
+  };
+
   return (
     <Dialog.Root open={open} onOpenChange={onClose}>
       <Dialog.Portal>
@@ -12,17 +42,27 @@ export default function ConfirmModal({ open, onClose, onConfirm, message }) {
           <div className="mb-6">
             <p>{message}</p>
           </div>
+
+          {errorMessage && (
+            <div className="mb-4 text-sm text-red-600 bg-red-100 p-2 rounded">
+              {errorMessage}
+            </div>
+          )}
+
           <div className="flex justify-end gap-2">
             <Dialog.Close asChild>
               <button
-                onClick={() => onClose(false)}
+                onClick={() => {
+                  onClose(false);
+                  setErrorMessage("");
+                }}
                 className="px-4 py-2 border rounded hover:bg-gray-100"
               >
                 Annulla
               </button>
             </Dialog.Close>
             <button
-              onClick={onConfirm}
+              onClick={handleConfirm}
               className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
             >
               Elimina

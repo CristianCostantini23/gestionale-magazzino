@@ -3,21 +3,61 @@ import { fetchData, postData } from "../utils/utilsCRUD.js";
 import { handleAsyncStates } from "../utils/handleAsyncStates.js";
 
 // GET ricevi tutte le vendite
-const fetchVendite = createAsyncThunk("vendite/fetchAll", async () => {
-  return await fetchData("/api/sales");
-});
+export const fetchVendite = createAsyncThunk(
+  "vendite/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await fetchData("/api/sales");
+    } catch (errore) {
+      return rejectWithValue(
+        errore.response?.data?.errore || "Errore nel recupero delle vendite"
+      );
+    }
+  }
+);
 
 // GET ricevi singola vendita per ID
-const fetchVenditaById = createAsyncThunk("vendite/fetchById", async (id) => {
-  return await fetchData(`/api/sales/${id}`);
-});
+export const fetchVenditaById = createAsyncThunk(
+  "vendite/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      return await fetchData(`/api/sales/${id}`);
+    } catch (errore) {
+      return rejectWithValue(
+        errore.response?.data?.errore || "Errore nel recupero della vendita"
+      );
+    }
+  }
+);
 
 // POST aggiungi vendita
-const postVendita = createAsyncThunk(
+export const postVendita = createAsyncThunk(
   "vendite/post",
-  async (nuovaVendita, { dispatch }) => {
-    await postData("/api/sales", nuovaVendita);
-    return dispatch(fetchVendite()).unwrap();
+  async (nuovaVendita, { dispatch, rejectWithValue }) => {
+    try {
+      await postData("/api/sales", nuovaVendita);
+      return await dispatch(fetchVendite()).unwrap();
+    } catch (errore) {
+      return rejectWithValue(
+        errore.response?.data?.errore ||
+          "Errore nella registrazione della vendita"
+      );
+    }
+  }
+);
+
+// GET ricevi tutti i dati per popolare la tabella
+export const getDettagliVendite = createAsyncThunk(
+  "vendite/getDettagli",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await fetchData("/api/sales/details");
+    } catch (errore) {
+      return (
+        rejectWithValue(errore.response?.data?.errore) ||
+        "Errore nel recupero delle vendite dettagliate"
+      );
+    }
   }
 );
 
@@ -45,6 +85,13 @@ const venditeSlice = createSlice({
     });
 
     handleAsyncStates(builder, postVendita, (state, action) => {
+      state.vendite = action.payload;
+      state.selectedVendita = null;
+      state.isLoading = false;
+      state.hasError = false;
+    });
+
+    handleAsyncStates(builder, getDettagliVendite, (state, action) => {
       state.vendite = action.payload;
       state.selectedVendita = null;
       state.isLoading = false;

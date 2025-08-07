@@ -41,9 +41,17 @@ export const updateprodotto = createAsyncThunk(
 // DELETE elimina prodotto
 export const deleteProdotto = createAsyncThunk(
   "prodotti/delete",
-  async (id, { dispatch }) => {
-    await deleteData(`/api/products/${id}`);
-    return dispatch(fetchProdotti()).unwrap();
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await deleteData(`/api/products/${id}`);
+      return dispatch(fetchProdotti()).unwrap();
+    } catch (errore) {
+      return (
+        rejectWithValue(errore.response?.data) || {
+          messaggio: "Errore sconosciuto",
+        }
+      );
+    }
   }
 );
 

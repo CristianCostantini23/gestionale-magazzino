@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "./ConfirmModal";
@@ -11,6 +11,9 @@ export default function Lista({
   urlUpdateAction,
   onDeleteAction,
   selector,
+  canEdit = true,
+  canDelete = true,
+  pageName,
 }) {
   const data = useSelector(selector);
 
@@ -18,12 +21,19 @@ export default function Lista({
   const [fkData, setFkData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [elementToDelete, setElementToDelete] = useState(null);
+  const hasFetched = useRef(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    hasFetched.current = false;
+  }, [pageName]);
+
+  useEffect(() => {
     const loadFKs = async () => {
+      console.log("Carico FK...");
+
       try {
         const promises = Object.entries(foreignKeys).map(
           async ([key, { dataUrl }]) => {
@@ -41,23 +51,33 @@ export default function Lista({
       }
     };
 
-    loadFKs();
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      loadFKs();
+    }
   }, [foreignKeys]);
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("Carico dati...");
       try {
         await dispatch(getElementAction()).unwrap();
         setErrors("");
       } catch (error) {
-        setErrors("Errore durante il recuper dei dati");
+        setErrors("Errore durante il recupero dei dati");
       }
     };
 
     fetchData();
+
+    // if (!hasFetched.current) {
+    //   hasFetched.current = true;
+    //   fetchData();
+    // }
   }, [dispatch, getElementAction]);
 
   const renderField = (el, field) => {
+    console.log("Render dei campi...");
     if (foreignKeys[field]) {
       const { valueField, labelField } = foreignKeys[field];
       const related = (fkData[field] || []).find(
@@ -67,8 +87,6 @@ export default function Lista({
     }
     return el[field];
   };
-
-  console.log(data);
 
   if (errors) return <p>{errors}</p>;
 
@@ -83,7 +101,7 @@ export default function Lista({
                 : f.replace(/_/g, " ");
               return <th key={f}>{label}</th>;
             })}
-            <th>Azioni</th>
+            {(canEdit || canDelete) && <th>Azioni</th>}
           </tr>
         </thead>
         <tbody>
@@ -93,21 +111,27 @@ export default function Lista({
                 {fields.map((f) => {
                   return <td key={f}>{renderField(el, f)}</td>;
                 })}
-                <td>
-                  <button
-                    onClick={() => navigate(`${urlUpdateAction}/${el.id}`)}
-                  >
-                    Modifica
-                  </button>
-                  <button
-                    onClick={() => {
-                      setElementToDelete(el);
-                      setShowModal(true);
-                    }}
-                  >
-                    Elimina
-                  </button>
-                </td>
+                {(canEdit || canDelete) && (
+                  <td>
+                    {canEdit && (
+                      <button
+                        onClick={() => navigate(`${urlUpdateAction}/${el.id}`)}
+                      >
+                        Modifica
+                      </button>
+                    )}
+                    {canDelete && (
+                      <button
+                        onClick={() => {
+                          setElementToDelete(el);
+                          setShowModal(true);
+                        }}
+                      >
+                        Elimina
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))
           ) : (
@@ -120,9 +144,9 @@ export default function Lista({
       <ConfirmModal
         open={showModal}
         onClose={setShowModal}
-        onConfirm={() => {
-          dispatch(onDeleteAction(elementToDelete.id));
-          setShowModal(false);
+        elementToDelete={elementToDelete}
+        onDelete={async (id) => {
+          return await dispatch(onDeleteAction(id)).unwrap();
         }}
         message={`Vuoi davvero eliminare "${
           elementToDelete?.nome || "questo elemento"

@@ -8,39 +8,48 @@ import {
 import { handleAsyncStates } from "../utils/handleAsyncStates.js";
 
 // GET ricevi tutte le entità
-const fetchEntita = createAsyncThunk("entita/fetchAll", async () => {
-  return await fetchData("/api/entita");
+export const fetchEntita = createAsyncThunk("entita/fetchAll", async () => {
+  return await fetchData("/api/entities");
 });
 
 // GET ricevi entità per ID
-const fetchEntitaById = createAsyncThunk("entita/fetchById", async (id) => {
-  return fetchData(`/api/entita/${id}`);
-});
+export const fetchEntitaById = createAsyncThunk(
+  "entita/fetchById",
+  async (id) => {
+    return fetchData(`/api/entities/${id}`);
+  }
+);
 
 // POST aggiungi entità
-const postEntita = createAsyncThunk(
+export const postEntita = createAsyncThunk(
   "entita/create",
   async (nuovaEntita, { dispatch }) => {
-    await postData("/api/entita", nuovaEntita);
+    await postData("/api/entities", nuovaEntita);
     return dispatch(fetchEntita()).unwrap();
   }
 );
 
 // PUT aggiorna entità
-const updateEntita = createAsyncThunk(
+export const updateEntita = createAsyncThunk(
   "entita/update",
   async ({ id, data }, { dispatch }) => {
-    await updateData(`/api/entita/${id}`, data);
+    await updateData(`/api/entities/${id}`, data);
     return dispatch(fetchEntita()).unwrap();
   }
 );
 
 // DELETE elimina entità
-const deleteEntita = createAsyncThunk(
+export const deleteEntita = createAsyncThunk(
   "entita/delete",
-  async (id, { dispatch }) => {
-    await deleteData(`/api/entita/${id}`);
-    return dispatch(fetchEntita()).unwrap();
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await deleteData(`/api/entities/${id}`);
+      return dispatch(fetchEntita()).unwrap();
+    } catch (errore) {
+      rejectWithValue(errore.response?.data) || {
+        messaggio: "Errore sconosciuto",
+      };
+    }
   }
 );
 
