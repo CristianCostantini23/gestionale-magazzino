@@ -1,12 +1,70 @@
-# React + Vite
+# Gestionale Magazzino
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Web app per la gestione di magazzino, costruita con React, Redux Toolkit, Tailwind CSS e Vite.
 
-Currently, two official plugins are available:
+## Descrizione
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Questo progetto è un gestionale per monitorare prodotti, entità, fornitori, vendite e movimenti di merce. È pensato per offrire una struttura scalabile e modulare, facilitando l'inserimento e la modifica dei dati tramite una dashboard intuitiva e componenti riutilizzabili.
 
-## Expanding the ESLint configuration
+## Stack Tecnologico
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ⚛️ **React** – UI dinamica e component-based  
+- 📦 **Redux Toolkit** – Stato globale con slice modulari  
+- 💨 **Tailwind CSS** – Styling rapido e responsive  
+- ⚡ **Vite** – Dev server ultra-veloce e build ottimizzata  
+- 🌐 **Axios** – HTTP client per comunicazione con API  
+- 🛠️ **Node.js/Express** - lato backend
+
+## 🏗️ Struttura del Progetto
+
+```
+gestionale-magazzino/
+├── server/                   # Cartella con codice backend
+│   ├── controller/          # Tutti i controller per le rotte
+│   ├── db/                  # Codice per connettersi al database
+│   ├── middleware/          # Funzioni di middleware
+│   ├── routes/              # Configurazione di tutte le rotte
+│   ├── schemas/             # Schemi Zod per validare i dati ricevuti
+│   ├── utils/               # Funzioni per validare/confrontare dati e query builder
+│   ├── .env                 # Variabili di ambiente
+│   └── app.js               # Configurazione Express e connessione alla porta
+│
+├── src/                     # Cartella con codice frontend
+│   ├── components/          # Componenti riutilizzabili (Form, Lista, Sidebar, ecc.)
+│   ├── pages/               # Pagine della SPA che utilizzano i componenti
+│   ├── store/               # Configurazione Redux
+│   │   ├── slices/          # Slice Redux per ogni entità (prodotti, fornitori, ecc.)
+│   │   ├── utils/           # Funzioni riutilizzabili usate dalle slice
+│   │   └── store.js         # Configurazione Redux store
+│   ├── App.jsx              # Componente principale dell'app
+│   ├── Main.jsx             # Configurazione React Router
+│   └── style.css            # Configurazione Tailwind CSS
+│
+├── desktop.ini
+├── eslint.config.js         # Configurazione ESLint
+├── index.html               # Entry point HTML
+├── package.json             # Dipendenze e script Node.js
+└── vite.config.js           # Configurazione di Vite
+```
+
+
+🚀 Funzionalità principali
+- 🔄 CRUD completo per le seguenti sezioni:
+- ✅ Prodotti
+- ✅ Entità (es. clienti, negozi, ecc.)
+- ✅ Fornitori
+- ✅ Brand
+- ✅ Vendite e Scarichi merce
+- 🧠 Gestione dello stato avanzata tramite Redux Toolkit con createAsyncThunk per chiamate asincrone
+- 
+🧩 Componenti dinamici e riutilizzabili:
+- Form generico che si adatta ai campi della sezione selezionata
+- Lista tabellare che si aggiorna automaticamente dopo operazioni CRUD
+
+- ⚡ Aggiornamento dati in tempo reale dopo inserimenti, modifiche e cancellazioni
+  
+🎨 Interfaccia responsive e moderna con Tailwind CSS:
+- Layout a 3 colonne: sidebar, lista centrale, form dinamico a destra
+- Ottimizzata anche per schermi ridotti
+  
+-🧹 Pulizia e modularità del codice con struttura scalabile e suddivisione logica di componenti, slice, e utilità comuni
