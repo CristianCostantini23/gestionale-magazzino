@@ -8,11 +8,18 @@ export default function Form({
   getElementAction,
   title = "Aggiungi elemento",
   successMessage = "Elemento creato con successo!",
+  initialData = {}, // nuovo
 }) {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState(() =>
-    fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
+    fields.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.name]: initialData[field.name] ?? "",
+      }),
+      {}
+    )
   );
 
   const [status, setStatus] = useState("idle");
@@ -32,6 +39,18 @@ export default function Form({
 
     loadOptions();
   }, [fields]);
+
+  useEffect(() => {
+    setFormData(
+      fields.reduce(
+        (acc, field) => ({
+          ...acc,
+          [field.name]: initialData[field.name] ?? "",
+        }),
+        {}
+      )
+    );
+  }, [initialData, fields]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,6 +75,10 @@ export default function Form({
     }
   };
 
+  const isFormValido = () => {
+    return fields.every((field) => formData[field.name] !== "");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("loading");
@@ -77,7 +100,6 @@ export default function Form({
       setStatus("success");
     } catch (error) {
       console.error("Errore durante la submit del form:", error);
-
       const errData = error;
 
       if (errData?.messaggio) {
@@ -96,12 +118,14 @@ export default function Form({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{title}</h2>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h2 className="text-lg font-bold">{title}</h2>
 
       {fields.map((field) => (
         <div key={field.name}>
-          <label htmlFor={field.name}>{field.label}</label>
+          <label htmlFor={field.name} className="block font-semibold">
+            {field.label}
+          </label>
 
           {field.type === "select" ? (
             <select
@@ -111,6 +135,7 @@ export default function Form({
               onChange={handleChange}
               disabled={!optionData[field.name]}
               required
+              className="border rounded px-2 py-1 w-full"
             >
               <option value="">Seleziona...</option>
               {(optionData[field.name] || []).map((opt) => (
@@ -132,19 +157,32 @@ export default function Form({
               onBlur={handleBlur}
               step={field.type === "number" ? "0.01" : undefined}
               required
+              className="border rounded px-2 py-1 w-full"
             />
           )}
 
-          {errors[field.name] && <span>{errors[field.name]}</span>}
+          {errors[field.name] && (
+            <span className="text-red-600 text-sm">{errors[field.name]}</span>
+          )}
         </div>
       ))}
 
-      <button type="submit" disabled={status === "loading"}>
+      {errors.global && <p className="text-red-600 text-sm">{errors.global}</p>}
+      {status === "success" && (
+        <p className="text-green-600 text-sm">{successMessage}</p>
+      )}
+
+      <button
+        type="submit"
+        disabled={status === "loading" || !isFormValido()}
+        className={`px-4 py-2 rounded text-white ${
+          isFormValido()
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-gray-400 cursor-not-allowed"
+        }`}
+      >
         {status === "loading" ? "Caricamento..." : "Invia"}
       </button>
-
-      {status === "success" && <p>{successMessage}</p>}
-      {status === "error" && <p>{errors.global}</p>}
     </form>
   );
 }
