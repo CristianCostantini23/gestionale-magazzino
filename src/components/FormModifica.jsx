@@ -114,7 +114,6 @@ export default function FormModifica({
     e.preventDefault();
     setStatus("loading");
     setErrors({});
-    console.log(formData);
 
     try {
       await dispatch(

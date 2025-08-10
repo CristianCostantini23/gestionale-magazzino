@@ -134,7 +134,7 @@ export default function Lista({
                       )}
                       {canDelete && (
                         <button
-                          className="hover:text-amber-900"
+                          className="hover:text-red-700"
                           onClick={() => {
                             setElementToDelete(el);
                             setShowModal(true);

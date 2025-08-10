@@ -5,6 +5,7 @@ import {
   deleteEntita,
   fetchEntita,
   postEntita,
+  updateEntita,
 } from "../store/slices/entitaSlice";
 
 export default function EntitaPage() {
@@ -37,6 +38,8 @@ export default function EntitaPage() {
         canDelete={true}
         canEdit={true}
         pageName="entita"
+        onUpdateAction={updateEntita}
+        formFields={formFields}
       />
     );
   if (section === "form")

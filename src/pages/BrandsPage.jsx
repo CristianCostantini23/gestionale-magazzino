@@ -4,6 +4,7 @@ import {
   deleteBrand,
   fetchBrands,
   postBrand,
+  updateBrand,
 } from "../store/slices/brandsSlice";
 import Lista from "../components/Lista";
 import Form from "../components/Form";
@@ -44,6 +45,8 @@ export default function BrandsPage() {
         canEdit={true}
         canDelete={true}
         pageName="brands"
+        onUpdateAction={updateBrand}
+        formFields={formFields}
       />
     );
   }

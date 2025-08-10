@@ -5,6 +5,7 @@ import {
   deleteFornitore,
   fetchfornitori,
   postfornitore,
+  updateFornitore,
 } from "../store/slices/fornitoriSlice";
 
 export default function EntitaPage() {
@@ -37,6 +38,8 @@ export default function EntitaPage() {
         canDelete={true}
         canEdit={true}
         pageName="fornitori"
+        onUpdateAction={updateFornitore}
+        formFields={formFields}
       />
     );
   if (section === "form")
