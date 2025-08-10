@@ -5,6 +5,7 @@ import {
   deleteProdotto,
   fetchProdotti,
   postProdotto,
+  updateProdotto,
 } from "../store/slices/prodottiSlice";
 
 export default function ProdottiPage() {
@@ -65,10 +66,12 @@ export default function ProdottiPage() {
         {...config}
         fields={listFields}
         foreignKeys={foreignKeys}
+        formFields={formFields}
         urlUpdateAction="/prodotti"
         canDelete={true}
         canEdit={true}
         pageName="prodotti"
+        onUpdateAction={updateProdotto}
       />
     );
   if (section === "form")

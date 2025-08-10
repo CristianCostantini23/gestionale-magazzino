@@ -24,8 +24,17 @@ export const fetchEntitaById = createAsyncThunk(
 export const postEntita = createAsyncThunk(
   "entita/create",
   async (nuovaEntita, { dispatch }) => {
-    await postData("/api/entities", nuovaEntita);
-    return dispatch(fetchEntita()).unwrap();
+    try {
+      await postData("/api/entities", nuovaEntita);
+      return dispatch(fetchEntita()).unwrap();
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiunta dell'entità.",
+      });
+    }
   }
 );
 
@@ -33,8 +42,17 @@ export const postEntita = createAsyncThunk(
 export const updateEntita = createAsyncThunk(
   "entita/update",
   async ({ id, data }, { dispatch }) => {
-    await updateData(`/api/entities/${id}`, data);
-    return dispatch(fetchEntita()).unwrap();
+    try {
+      await updateData(`/api/entities/${id}`, data);
+      return dispatch(fetchEntita()).unwrap();
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiornamento dell'entità.",
+      });
+    }
   }
 );
 
@@ -45,10 +63,13 @@ export const deleteEntita = createAsyncThunk(
     try {
       await deleteData(`/api/entities/${id}`);
       return dispatch(fetchEntita()).unwrap();
-    } catch (errore) {
-      rejectWithValue(errore.response?.data) || {
-        messaggio: "Errore sconosciuto",
-      };
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'eliminazione dell'entità.",
+      });
     }
   }
 );

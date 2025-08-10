@@ -37,11 +37,13 @@ export const postVendita = createAsyncThunk(
     try {
       await postData("/api/sales", nuovaVendita);
       return await dispatch(fetchVendite()).unwrap();
-    } catch (errore) {
-      return rejectWithValue(
-        errore.response?.data?.errore ||
-          "Errore nella registrazione della vendita"
-      );
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiunta della vendita.",
+      });
     }
   }
 );

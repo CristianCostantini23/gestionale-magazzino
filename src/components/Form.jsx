@@ -8,7 +8,6 @@ export default function Form({
   getElementAction,
   title = "Aggiungi elemento",
   successMessage = "Elemento creato con successo!",
-  initialData = {}, // nuovo
 }) {
   const dispatch = useDispatch();
 
@@ -16,7 +15,7 @@ export default function Form({
     fields.reduce(
       (acc, field) => ({
         ...acc,
-        [field.name]: initialData[field.name] ?? "",
+        [field.name]: "",
       }),
       {}
     )
@@ -45,12 +44,12 @@ export default function Form({
       fields.reduce(
         (acc, field) => ({
           ...acc,
-          [field.name]: initialData[field.name] ?? "",
+          [field.name]: "",
         }),
         {}
       )
     );
-  }, [initialData, fields]);
+  }, [fields]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

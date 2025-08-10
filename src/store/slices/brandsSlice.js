@@ -28,9 +28,12 @@ export const postBrand = createAsyncThunk(
       await postData("/api/brands", nuovoBrand);
       return dispatch(fetchBrands()).unwrap();
     } catch (error) {
-      return rejectWithValue(
-        error.response.data || { errore: "Errore imprevisto" }
-      );
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiunta del brand.",
+      });
     }
   }
 );
@@ -39,8 +42,17 @@ export const postBrand = createAsyncThunk(
 export const updateBrand = createAsyncThunk(
   "brands/update",
   async ({ id, data }, { dispatch }) => {
-    await updateData(`/api/brands/${id}`, data);
-    return dispatch(fetchBrands()).unwrap();
+    try {
+      await updateData(`/api/brands/${id}`, data);
+      return dispatch(fetchBrands()).unwrap();
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiornamento del brand.",
+      });
+    }
   }
 );
 
@@ -51,10 +63,13 @@ export const deleteBrand = createAsyncThunk(
     try {
       await deleteData(`/api/brands/${id}`);
       return dispatch(fetchBrands()).unwrap();
-    } catch (errore) {
-      rejectWithValue(errore.response?.data) || {
-        messaggio: "Errore sconosciuto",
-      };
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'eliminazione del brand.",
+      });
     }
   }
 );

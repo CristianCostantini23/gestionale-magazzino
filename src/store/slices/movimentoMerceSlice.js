@@ -14,8 +14,17 @@ export const fetchAllmovimentiMerce = createAsyncThunk(
 export const postMovimentoMerce = createAsyncThunk(
   "movimentiMerce/post",
   async (nuovoMovimento, { dispatch }) => {
-    await postData("/api/stock-movements");
-    return dispatch(fetchAllmovimentiMerce()).unwrap();
+    try {
+      await postData("/api/stock-movements");
+      return dispatch(fetchAllmovimentiMerce()).unwrap();
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiunta del movimento.",
+      });
+    }
   }
 );
 

@@ -30,11 +30,13 @@ export const postfornitore = createAsyncThunk(
     try {
       await postData("/api/suppliers", nuovoFornitore);
       return await dispatch(fetchfornitori()).unwrap();
-    } catch (errore) {
-      // restituisci l'oggetto che React può leggere
-      return rejectWithValue(
-        errore.response?.data || { errore: "Errore imprevisto" }
-      );
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiunta del fornitore.",
+      });
     }
   }
 );
@@ -46,10 +48,13 @@ export const updateFornitore = createAsyncThunk(
     try {
       await updateData(`/api/suppliers/${id}`, data);
       return await dispatch(fetchfornitori()).unwrap();
-    } catch (errore) {
-      return rejectWithValue(
-        errore.response?.data || { errore: "Errore imprevisto" }
-      );
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiornamento del fornitore.",
+      });
     }
   }
 );
@@ -61,10 +66,13 @@ export const deleteFornitore = createAsyncThunk(
     try {
       await deleteData(`/api/suppliers/${id}`);
       return dispatch(fetchfornitori()).unwrap();
-    } catch (errore) {
-      rejectWithValue(errore.response?.data) || {
-        messaggio: "Errore sconosciuto",
-      };
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'eliminazione del fornitore.",
+      });
     }
   }
 );

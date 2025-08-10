@@ -22,8 +22,17 @@ export const fetchScarichiMerceById = createAsyncThunk(
 export const postScaricoMerce = createAsyncThunk(
   "scarichiMerce/post",
   async (nuovoScaricoMerce, { dispatch }) => {
-    await postData("/api/incoming-stock", nuovoScaricoMerce);
-    return dispatch(fetchAllScarichiMerce()).unwrap();
+    try {
+      await postData("/api/incoming-stock", nuovoScaricoMerce);
+      return dispatch(fetchAllScarichiMerce()).unwrap();
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiunta dello scarico.",
+      });
+    }
   }
 );
 

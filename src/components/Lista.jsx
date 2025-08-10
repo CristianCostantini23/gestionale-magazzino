@@ -13,6 +13,7 @@ export default function Lista({
   canEdit = true,
   canDelete = true,
   pageName,
+  formFields,
 }) {
   const data = useSelector(selector);
 
@@ -125,6 +126,7 @@ export default function Lista({
                           onClick={() => {
                             setElementToEdit(el);
                             setShowEditModal(true);
+                            console.log(elementToEdit);
                           }}
                         >
                           Modifica
@@ -167,14 +169,15 @@ export default function Lista({
         }"?`}
       />
 
-      {/* MODAL MODIFICA */}
+      {/* MODAL MODIFICA  */}
       <ModalModifica
         open={showEditModal}
         onOpenChange={setShowEditModal}
-        fields={fields}
-        foreignKeys={foreignKeys}
-        onSubmitAction={onUpdateAction}
-        initialData={elementToEdit}
+        formFields={formFields}
+        onUpdateAction={onUpdateAction}
+        initialState={elementToEdit}
+        onCancel={() => setShowEditModal(false)}
+        onSuccess={() => setShowEditModal(false)}
       />
     </>
   );

@@ -24,17 +24,35 @@ export const fetchProdottiById = createAsyncThunk(
 export const postProdotto = createAsyncThunk(
   "prodotti/create",
   async (nuovoProdotto, { dispatch }) => {
-    await postData("/api/products", nuovoProdotto);
-    return dispatch(fetchProdotti()).unwrap();
+    try {
+      await postData("/api/products", nuovoProdotto);
+      return dispatch(fetchProdotti()).unwrap();
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiunta del prodotto.",
+      });
+    }
   }
 );
 
 // PUT aggiorna prodotto
-export const updateprodotto = createAsyncThunk(
+export const updateProdotto = createAsyncThunk(
   "prodotti/update",
-  async ({ id, data }, { dispatch }) => {
-    await updateData(`/api/products/${id}`, data);
-    return dispatch(fetchProdotti()).unwrap();
+  async ({ id, data }, { dispatch, rejectWithValue }) => {
+    try {
+      await updateData(`/api/products/${id}`, data);
+      return await dispatch(fetchProdotti()).unwrap();
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        errore: "Errore durante l'aggiornamento del prodotto.",
+      });
+    }
   }
 );
 
@@ -85,7 +103,7 @@ const prodottiSlice = createSlice({
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, updateprodotto, (state, action) => {
+    handleAsyncStates(builder, updateProdotto, (state, action) => {
       state.prodotti = action.payload;
       state.selectedProdotto = null;
       state.isLoading = false;
