@@ -26,7 +26,8 @@ export const postBrand = createAsyncThunk(
   async (nuovoBrand, { dispatch, rejectWithValue }) => {
     try {
       await postData("/api/brands", nuovoBrand);
-      return dispatch(fetchBrands()).unwrap();
+      const brands = await dispatch(fetchBrands()).unwrap();
+      return brands;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -44,7 +45,8 @@ export const updateBrand = createAsyncThunk(
   async ({ id, data }, { dispatch }) => {
     try {
       await updateData(`/api/brands/${id}`, data);
-      return dispatch(fetchBrands()).unwrap();
+      const brands = await dispatch(fetchBrands()).unwrap();
+      return brands;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -62,7 +64,8 @@ export const deleteBrand = createAsyncThunk(
   async (id, { dispatch, rejectWithValue }) => {
     try {
       await deleteData(`/api/brands/${id}`);
-      return dispatch(fetchBrands()).unwrap();
+      const brands = await dispatch(fetchBrands()).unwrap();
+      return brands;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);

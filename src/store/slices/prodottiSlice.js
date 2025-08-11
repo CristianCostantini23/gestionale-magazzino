@@ -26,7 +26,8 @@ export const postProdotto = createAsyncThunk(
   async (nuovoProdotto, { dispatch }) => {
     try {
       await postData("/api/products", nuovoProdotto);
-      return dispatch(fetchProdotti()).unwrap();
+      const prodotti = await dispatch(fetchProdotti()).unwrap();
+      return prodotti;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -44,7 +45,8 @@ export const updateProdotto = createAsyncThunk(
   async ({ id, data }, { dispatch, rejectWithValue }) => {
     try {
       await updateData(`/api/products/${id}`, data);
-      return await dispatch(fetchProdotti()).unwrap();
+      const prodotti = await dispatch(fetchProdotti()).unwrap();
+      return prodotti;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -62,7 +64,8 @@ export const deleteProdotto = createAsyncThunk(
   async (id, { dispatch, rejectWithValue }) => {
     try {
       await deleteData(`/api/products/${id}`);
-      return dispatch(fetchProdotti()).unwrap();
+      const prodotti = await dispatch(fetchProdotti()).unwrap();
+      return prodotti;
     } catch (errore) {
       return (
         rejectWithValue(errore.response?.data) || {

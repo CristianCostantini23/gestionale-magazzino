@@ -36,7 +36,8 @@ export const postVendita = createAsyncThunk(
   async (nuovaVendita, { dispatch, rejectWithValue }) => {
     try {
       await postData("/api/sales", nuovaVendita);
-      return await dispatch(fetchVendite()).unwrap();
+      const vendite = await dispatch(fetchVendite()).unwrap();
+      return vendite;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);

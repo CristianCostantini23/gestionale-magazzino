@@ -29,7 +29,8 @@ export const postfornitore = createAsyncThunk(
   async (nuovoFornitore, { dispatch, rejectWithValue }) => {
     try {
       await postData("/api/suppliers", nuovoFornitore);
-      return await dispatch(fetchfornitori()).unwrap();
+      const fornitori = await dispatch(fetchfornitori()).unwrap();
+      return fornitori;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -47,7 +48,8 @@ export const updateFornitore = createAsyncThunk(
   async ({ id, data }, { dispatch, rejectWithValue }) => {
     try {
       await updateData(`/api/suppliers/${id}`, data);
-      return await dispatch(fetchfornitori()).unwrap();
+      const fornitori = await dispatch(fetchfornitori()).unwrap();
+      return fornitori;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -65,7 +67,8 @@ export const deleteFornitore = createAsyncThunk(
   async (id, { dispatch, rejectWithValue }) => {
     try {
       await deleteData(`/api/suppliers/${id}`);
-      return dispatch(fetchfornitori()).unwrap();
+      const fornitori = await dispatch(fetchfornitori()).unwrap();
+      return fornitori;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);

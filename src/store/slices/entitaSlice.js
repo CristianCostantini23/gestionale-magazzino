@@ -26,7 +26,8 @@ export const postEntita = createAsyncThunk(
   async (nuovaEntita, { dispatch }) => {
     try {
       await postData("/api/entities", nuovaEntita);
-      return dispatch(fetchEntita()).unwrap();
+      const entita = dispatch(fetchEntita()).unwrap();
+      return entita;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -44,7 +45,8 @@ export const updateEntita = createAsyncThunk(
   async ({ id, data }, { dispatch }) => {
     try {
       await updateData(`/api/entities/${id}`, data);
-      return dispatch(fetchEntita()).unwrap();
+      const entita = dispatch(fetchEntita()).unwrap();
+      return entita;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
@@ -62,7 +64,8 @@ export const deleteEntita = createAsyncThunk(
   async (id, { dispatch, rejectWithValue }) => {
     try {
       await deleteData(`/api/entities/${id}`);
-      return dispatch(fetchEntita()).unwrap();
+      const entita = dispatch(fetchEntita()).unwrap();
+      return entita;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);

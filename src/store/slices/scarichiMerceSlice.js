@@ -24,7 +24,8 @@ export const postScaricoMerce = createAsyncThunk(
   async (nuovoScaricoMerce, { dispatch }) => {
     try {
       await postData("/api/incoming-stock", nuovoScaricoMerce);
-      return dispatch(fetchAllScarichiMerce()).unwrap();
+      const scarichi = await dispatch(fetchAllScarichiMerce()).unwrap();
+      return scarichi;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);

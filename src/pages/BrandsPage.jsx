@@ -15,8 +15,8 @@ export default function BrandsPage() {
   const dispatch = useDispatch();
 
   const getElementAction = useCallback(() => dispatch(fetchBrands()), []);
-  const onSubmitAction = useCallback((data) => dispatch(postBrand(data)), []);
-  const onDeleteAction = useCallback((id) => dispatch(deleteBrand(id)), []);
+  const onSubmitAction = postBrand;
+  const onDeleteAction = deleteBrand;
   const selector = useCallback((state) => state.brands.brands, []);
 
   const config = useMemo(
