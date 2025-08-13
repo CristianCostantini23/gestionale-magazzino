@@ -5,10 +5,10 @@ import {
   postData,
   updateData,
 } from "../utils/utilsCRUD.js";
-import { handleAsyncStates } from "../utils/handleAsyncStates.js";
+import { handleAsyncThunks } from "../utils/handleAsyncThunks.js";
 
 // GET ricevi tutti i fornitori
-export const fetchfornitori = createAsyncThunk(
+export const fetchFornitori = createAsyncThunk(
   "fornitori/fetchAll",
   async () => {
     return await fetchData("/api/suppliers");
@@ -24,7 +24,7 @@ export const fetchFornitoreById = createAsyncThunk(
 );
 
 // POST aggiungi fornitore
-export const postfornitore = createAsyncThunk(
+export const postFornitore = createAsyncThunk(
   "fornitori/create",
   async (nuovoFornitore, { dispatch, rejectWithValue }) => {
     try {
@@ -80,7 +80,7 @@ export const deleteFornitore = createAsyncThunk(
   }
 );
 
-const fornitoriSlice = createSlice({
+const sliceFornitori = createSlice({
   name: "fornitori",
   initialState: {
     fornitori: [],
@@ -90,34 +90,34 @@ const fornitoriSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    handleAsyncStates(builder, fetchfornitori, (state, action) => {
+    handleAsyncThunks(builder, fetchFornitori, (state, action) => {
       state.fornitori = action.payload;
       state.selectedFornitore = null;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, fetchFornitoreById, (state, action) => {
+    handleAsyncThunks(builder, fetchFornitoreById, (state, action) => {
       state.selectedFornitore = action.payload;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, postfornitore, (state, action) => {
+    handleAsyncThunks(builder, postFornitore, (state, action) => {
       state.fornitori = action.payload;
       state.selectedFornitore = null;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, updateFornitore, (state, action) => {
+    handleAsyncThunks(builder, updateFornitore, (state, action) => {
       state.fornitori = action.payload;
       state.selectedFornitore = null;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, deleteFornitore, (state, action) => {
+    handleAsyncThunks(builder, deleteFornitore, (state, action) => {
       state.fornitori = action.payload;
       state.selectedFornitore = null;
       state.isLoading = false;
@@ -126,4 +126,4 @@ const fornitoriSlice = createSlice({
   },
 });
 
-export default fornitoriSlice.reducer;
+export default sliceFornitori.reducer;

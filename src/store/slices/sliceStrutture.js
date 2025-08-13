@@ -5,27 +5,27 @@ import {
   postData,
   updateData,
 } from "../utils/utilsCRUD.js";
-import { handleAsyncStates } from "../utils/handleAsyncStates.js";
+import { handleAsyncThunks } from "../utils/handleAsyncThunks.js";
 
-// GET ricevi tutte le entità
-export const fetchEntita = createAsyncThunk("entita/fetchAll", async () => {
-  return await fetchData("/api/entities");
+// GET ricevi tutte le Strutture
+export const fetchStrutture = createAsyncThunk("entita/fetchAll", async () => {
+  return await fetchData("/api/strutture");
 });
 
-// GET ricevi entità per ID
-export const fetchEntitaById = createAsyncThunk(
+// GET ricevi Struttura per ID
+export const fetchStrutturaById = createAsyncThunk(
   "entita/fetchById",
   async (id) => {
-    return fetchData(`/api/entities/${id}`);
+    return fetchData(`/api/strutture/${id}`);
   }
 );
 
-// POST aggiungi entità
-export const postEntita = createAsyncThunk(
+// POST aggiungi Struttura
+export const postStruttura = createAsyncThunk(
   "entita/create",
   async (nuovaEntita, { dispatch }) => {
     try {
-      await postData("/api/entities", nuovaEntita);
+      await postData("/api/strutture", nuovaEntita);
       const entita = dispatch(fetchEntita()).unwrap();
       return entita;
     } catch (error) {
@@ -39,12 +39,12 @@ export const postEntita = createAsyncThunk(
   }
 );
 
-// PUT aggiorna entità
-export const updateEntita = createAsyncThunk(
+// PUT aggiorna Struttura
+export const updateStruttura = createAsyncThunk(
   "entita/update",
   async ({ id, data }, { dispatch }) => {
     try {
-      await updateData(`/api/entities/${id}`, data);
+      await updateData(`/api/strutture/${id}`, data);
       const entita = dispatch(fetchEntita()).unwrap();
       return entita;
     } catch (error) {
@@ -58,12 +58,12 @@ export const updateEntita = createAsyncThunk(
   }
 );
 
-// DELETE elimina entità
-export const deleteEntita = createAsyncThunk(
+// DELETE elimina Struttura
+export const deleteStruttura = createAsyncThunk(
   "entita/delete",
   async (id, { dispatch, rejectWithValue }) => {
     try {
-      await deleteData(`/api/entities/${id}`);
+      await deleteData(`/api/strutture/${id}`);
       const entita = dispatch(fetchEntita()).unwrap();
       return entita;
     } catch (error) {
@@ -77,44 +77,44 @@ export const deleteEntita = createAsyncThunk(
   }
 );
 
-const entitaSlice = createSlice({
-  name: "entita",
+const sliceStrutture = createSlice({
+  name: "strutture",
   initialState: {
-    entita: [],
-    selectedEntita: null,
+    strutture: [],
+    selectedStruttura: null,
     isLoading: false,
     hasError: false,
   },
   reducers: {},
   extraReducers: (builder) => {
-    handleAsyncStates(builder, fetchEntita, (state, action) => {
-      state.entita = action.payload;
-      state.selectedEntita = null;
+    handleAsyncThunks(builder, fetchStrutture, (state, action) => {
+      state.strutture = action.payload;
+      state.selectedStruttura = null;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, fetchEntitaById, (state, action) => {
-      state.selectedEntita = action.payload;
+    handleAsyncThunks(builder, fetchStrutturaById, (state, action) => {
+      state.selectedStruttura = action.payload;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, postEntita, (state, action) => {
-      state.entita = action.payload;
-      state.selectedEntita = null;
+    handleAsyncThunks(builder, postStruttura, (state, action) => {
+      state.strutture = action.payload;
+      state.selectedStruttura = null;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, updateEntita, (state, action) => {
-      state.entita = action.payload;
-      state.selectedEntita = null;
+    handleAsyncThunks(builder, updateStruttura, (state, action) => {
+      state.strutture = action.payload;
+      state.selectedStruttura = null;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, deleteEntita, (state, action) => {
+    handleAsyncThunks(builder, deleteStruttura, (state, action) => {
       state.entita = action.payload;
       state.selectedEntita = null;
       state.isLoading = false;
@@ -123,4 +123,4 @@ const entitaSlice = createSlice({
   },
 });
 
-export default entitaSlice.reducer;
+export default sliceStrutture.reducer;

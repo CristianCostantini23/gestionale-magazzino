@@ -9,9 +9,9 @@ export default function App() {
         <div className="flex-1 p-4 overflow-auto border-r">
           <Outlet context={{ section: "list" }} />
         </div>
-        <div className="w-[400px] p-4 border-l">
+        {/* <div className="w-[400px] p-4 border-l">
           <Outlet context={{ section: "form" }} />
-        </div>
+        </div> */}
       </main>
     </div>
   );

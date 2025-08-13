@@ -31,28 +31,3 @@ export async function checkUniqueDuplicates(table, fields, excludedId = null) {
   }
   return duplicatesFields;
 }
-
-// gestisce gli errori interni (status 500) da usare nel blocco catch
-// ritorna la risposta con errore
-export function handleServerError(
-  res,
-  error,
-  errMessage = "errore interno del server"
-) {
-  if (error.code === "ER_ROW_IS_REFERENCED_2") {
-    return res.status(409).json({
-      messaggio:
-        "Impossibile eliminare l'elemento: esistono voci collegate in altre tabelle.",
-    });
-  }
-  console.error(error);
-  res.status(500).json({ errore: errMessage });
-}
-
-// gestisce gli errori ZOD
-// ritorna la risposta con errore
-export function handleZodError(res, error) {
-  return res
-    .status(400)
-    .json({ errore: "dati non validi", dettaglio: error.errors });
-}

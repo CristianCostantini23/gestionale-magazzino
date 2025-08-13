@@ -1,16 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchData, postData } from "../utils/utilsCRUD.js";
-import { handleAsyncStates } from "../utils/handleAsyncStates.js";
+import { handleAsyncThunks } from "../utils/handleAsyncThunks.js";
 
 // GET ricevi tutte le vendite
 export const fetchVendite = createAsyncThunk(
   "vendite/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      return await fetchData("/api/sales");
-    } catch (errore) {
+      return await fetchData("/api/vendite");
+    } catch (error) {
       return rejectWithValue(
-        errore.response?.data?.errore || "Errore nel recupero delle vendite"
+        error.response?.data?.error || "Errore nel recupero delle vendite"
       );
     }
   }
@@ -21,10 +21,10 @@ export const fetchVenditaById = createAsyncThunk(
   "vendite/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      return await fetchData(`/api/sales/${id}`);
-    } catch (errore) {
+      return await fetchData(`/api/vendite/${id}`);
+    } catch (error) {
       return rejectWithValue(
-        errore.response?.data?.errore || "Errore nel recupero della vendita"
+        error.response?.data?.error || "Errore nel recupero della vendita"
       );
     }
   }
@@ -35,7 +35,7 @@ export const postVendita = createAsyncThunk(
   "vendite/post",
   async (nuovaVendita, { dispatch, rejectWithValue }) => {
     try {
-      await postData("/api/sales", nuovaVendita);
+      await postData("/api/vendite", nuovaVendita);
       const vendite = await dispatch(fetchVendite()).unwrap();
       return vendite;
     } catch (error) {
@@ -43,28 +43,13 @@ export const postVendita = createAsyncThunk(
         return rejectWithValue(error.response.data);
       }
       return rejectWithValue({
-        errore: "Errore durante l'aggiunta della vendita.",
+        error: "Errore durante l'aggiunta della vendita.",
       });
     }
   }
 );
 
-// GET ricevi tutti i dati per popolare la tabella
-export const getDettagliVendite = createAsyncThunk(
-  "vendite/getDettagli",
-  async (_, { rejectWithValue }) => {
-    try {
-      return await fetchData("/api/sales/details");
-    } catch (errore) {
-      return (
-        rejectWithValue(errore.response?.data?.errore) ||
-        "Errore nel recupero delle vendite dettagliate"
-      );
-    }
-  }
-);
-
-const venditeSlice = createSlice({
+const sliceVendite = createSlice({
   name: "vendite",
   initialState: {
     vendite: [],
@@ -74,27 +59,20 @@ const venditeSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    handleAsyncStates(builder, fetchVendite, (state, action) => {
+    handleAsyncThunks(builder, fetchVendite, (state, action) => {
       state.vendite = action.payload;
       state.selectedVendita = null;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, fetchVenditaById, (state, action) => {
+    handleAsyncThunks(builder, fetchVenditaById, (state, action) => {
       state.selectedVendita = action.payload;
       state.isLoading = false;
       state.hasError = false;
     });
 
-    handleAsyncStates(builder, postVendita, (state, action) => {
-      state.vendite = action.payload;
-      state.selectedVendita = null;
-      state.isLoading = false;
-      state.hasError = false;
-    });
-
-    handleAsyncStates(builder, getDettagliVendite, (state, action) => {
+    handleAsyncThunks(builder, postVendita, (state, action) => {
       state.vendite = action.payload;
       state.selectedVendita = null;
       state.isLoading = false;
@@ -103,4 +81,4 @@ const venditeSlice = createSlice({
   },
 });
 
-export default venditeSlice.reducer;
+export default sliceVendite.reducer;
