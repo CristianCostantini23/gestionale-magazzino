@@ -1,9 +1,14 @@
 export function checkIdMiddleware(req, res, next) {
-  const { id } = req.params;
-  const idNumber = Number(id);
-  if (!Number.isInteger(idNumber) || idNumber <= 0) {
-    return res.status(400).json({ errore: "impossibile trovare ID" });
+  const ids = {};
+
+  for (const [key, value] of Object.entries(req.params)) {
+    const num = Number(value);
+    if (!Number.isInteger(num) || num <= 0) {
+      return res.status(400).json({ errore: "ID non valido" });
+    }
+    ids[key] = num; // esempio: { strutturaId: 1, prodottoId: 5 }
   }
-  req.id = idNumber;
+
+  req.ids = ids;
   next();
 }

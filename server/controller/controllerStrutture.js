@@ -26,7 +26,7 @@ export async function getAllStrutture(req, res) {
 
 // GET ricevi struttura per ID
 export async function getStrutturaById(req, res) {
-  const { id } = req;
+  const { id } = req.ids;
 
   try {
     const [rows] = await pool.query(buildGetByIdQuery("strutture"), [id]);
@@ -64,7 +64,7 @@ export async function postStruttura(req, res) {
 
 // PUT aggiorna una struttura
 export async function updateStruttura(req, res) {
-  const { id } = req;
+  const { id } = req.ids;
 
   try {
     const rowExists = await recordExistById("strutture", id);
@@ -102,7 +102,7 @@ export async function updateStruttura(req, res) {
 
 // DELETE rimuovi singola struttura
 export async function deleteStruttura(req, res) {
-  const { id } = req;
+  const { id } = req.ids;
 
   try {
     const rowExists = await recordExistById("strutture", id);
@@ -110,7 +110,7 @@ export async function deleteStruttura(req, res) {
       return res.status(404).json({ error: "struttura non trovata" });
     }
 
-    const [result] = await pool.query(buildDeleteQuery("entita"), [id]);
+    const [result] = await pool.query(buildDeleteQuery("strutture"), [id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "struttura non trovata" });
     }

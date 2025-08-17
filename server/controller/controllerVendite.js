@@ -83,7 +83,7 @@ export async function postVendita(req, res) {
 // GET ricevo i dettagli di una singola vendita per ID
 export async function getDettagliVendita(req, res) {
   try {
-    const { id } = req;
+    const { id } = req.ids;
 
     if (!(await recordExistById(id))) {
       return res.status(404).json({

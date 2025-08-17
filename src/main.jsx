@@ -6,6 +6,9 @@ import { store } from "./store/store.js";
 import { Provider } from "react-redux";
 import "./style.css";
 import Homepage from "./pages/Homepage.jsx";
+import PaginaStrutture from "./pages/paginaStrutture.jsx";
+import InventarioStruttura from "./pages/InventarioStruttura.jsx";
+import PaginaFornitori from "./pages/paginaFornitori.jsx";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +19,21 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Homepage />,
+      },
+      // STRUTTURE
+      {
+        path: "strutture",
+        element: <PaginaStrutture />,
+      },
+      // INVENTARI
+      {
+        path: "strutture/:strutturaId",
+        element: <InventarioStruttura />,
+      },
+      // FORNITORI
+      {
+        path: "fornitori",
+        element: <PaginaFornitori />,
       },
     ],
   },

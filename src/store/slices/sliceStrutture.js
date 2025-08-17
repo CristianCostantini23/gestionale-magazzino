@@ -8,32 +8,53 @@ import {
 import { handleAsyncThunks } from "../utils/handleAsyncThunks.js";
 
 // GET ricevi tutte le Strutture
-export const fetchStrutture = createAsyncThunk("entita/fetchAll", async () => {
-  return await fetchData("/api/strutture");
-});
+export const fetchStrutture = createAsyncThunk(
+  "entita/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await fetchData("/api/strutture");
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        error: "Errore durante il recupero dei dati delle strutture.",
+      });
+    }
+  }
+);
 
 // GET ricevi Struttura per ID
 export const fetchStrutturaById = createAsyncThunk(
   "entita/fetchById",
-  async (id) => {
-    return fetchData(`/api/strutture/${id}`);
+  async (id, { rejectWithValue }) => {
+    try {
+      return fetchData(`/api/strutture/${id}`);
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({
+        error: "Errore durante il recupero dei dati delle strutture.",
+      });
+    }
   }
 );
 
 // POST aggiungi Struttura
 export const postStruttura = createAsyncThunk(
   "entita/create",
-  async (nuovaEntita, { dispatch }) => {
+  async (nuovaStruttura, { dispatch, rejectWithValue }) => {
     try {
-      await postData("/api/strutture", nuovaEntita);
-      const entita = dispatch(fetchEntita()).unwrap();
-      return entita;
+      await postData("/api/strutture", nuovaStruttura);
+      const struttura = dispatch(fetchStrutture()).unwrap();
+      return struttura;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
       }
       return rejectWithValue({
-        errore: "Errore durante l'aggiunta dell'entità.",
+        error: "Errore durante l'aggiunta della struttura.",
       });
     }
   }
@@ -42,17 +63,17 @@ export const postStruttura = createAsyncThunk(
 // PUT aggiorna Struttura
 export const updateStruttura = createAsyncThunk(
   "entita/update",
-  async ({ id, data }, { dispatch }) => {
+  async ({ id, data }, { dispatch, rejectWithValue }) => {
     try {
       await updateData(`/api/strutture/${id}`, data);
-      const entita = dispatch(fetchEntita()).unwrap();
-      return entita;
+      const struttura = dispatch(fetchStrutture()).unwrap();
+      return struttura;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
       }
       return rejectWithValue({
-        errore: "Errore durante l'aggiornamento dell'entità.",
+        error: "Errore durante l'aggiornamento della struttura.",
       });
     }
   }
@@ -64,14 +85,14 @@ export const deleteStruttura = createAsyncThunk(
   async (id, { dispatch, rejectWithValue }) => {
     try {
       await deleteData(`/api/strutture/${id}`);
-      const entita = dispatch(fetchEntita()).unwrap();
-      return entita;
+      const struttura = dispatch(fetchStrutture()).unwrap();
+      return struttura;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);
       }
       return rejectWithValue({
-        errore: "Errore durante l'eliminazione dell'entità.",
+        error: "Errore durante l'eliminazione della struttura.",
       });
     }
   }
@@ -84,41 +105,28 @@ const sliceStrutture = createSlice({
     selectedStruttura: null,
     isLoading: false,
     hasError: false,
+    errorMessage: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     handleAsyncThunks(builder, fetchStrutture, (state, action) => {
       state.strutture = action.payload;
-      state.selectedStruttura = null;
-      state.isLoading = false;
-      state.hasError = false;
     });
 
     handleAsyncThunks(builder, fetchStrutturaById, (state, action) => {
       state.selectedStruttura = action.payload;
-      state.isLoading = false;
-      state.hasError = false;
     });
 
     handleAsyncThunks(builder, postStruttura, (state, action) => {
       state.strutture = action.payload;
-      state.selectedStruttura = null;
-      state.isLoading = false;
-      state.hasError = false;
     });
 
     handleAsyncThunks(builder, updateStruttura, (state, action) => {
       state.strutture = action.payload;
-      state.selectedStruttura = null;
-      state.isLoading = false;
-      state.hasError = false;
     });
 
     handleAsyncThunks(builder, deleteStruttura, (state, action) => {
       state.entita = action.payload;
-      state.selectedEntita = null;
-      state.isLoading = false;
-      state.hasError = false;
     });
   },
 });

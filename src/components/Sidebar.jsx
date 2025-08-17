@@ -3,8 +3,8 @@ import { Home, Truck, Building2, ShoppingCart } from "lucide-react";
 
 const links = [
   { to: "/", label: "Home", icon: <Home size={24} /> },
-  { to: "/fornitori", label: "Fornitori", icon: <Truck size={24} /> },
   { to: "/strutture", label: "Strutture", icon: <Building2 size={24} /> },
+  { to: "/fornitori", label: "Fornitori", icon: <Truck size={24} /> },
   { to: "/vendite", label: "Vendite", icon: <ShoppingCart size={24} /> },
 ];
 

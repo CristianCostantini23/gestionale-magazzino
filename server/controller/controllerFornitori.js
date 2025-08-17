@@ -8,7 +8,10 @@ import {
   buildDeleteQuery,
 } from "../utils/queryBuilder.js";
 import { schemaFornitori } from "../schemas/schemaFornitori.js";
-import { checkUniqueDuplicates } from "../utils/dataValidation.js";
+import {
+  checkUniqueDuplicates,
+  recordExistById,
+} from "../utils/dataValidation.js";
 
 // GET ricevi tutti i fornitori
 export async function getAllFornitori(req, res) {
@@ -23,7 +26,7 @@ export async function getAllFornitori(req, res) {
 
 // GET ricevi fornitore per ID
 export async function getFornitoreById(req, res) {
-  const { id } = req;
+  const { id } = req.ids;
 
   try {
     const [rows] = await pool.query(buildGetByIdQuery("fornitori"), [id]);
@@ -63,7 +66,7 @@ export async function postFornitore(req, res) {
 
 // PUT aggiorna fornitore
 export async function updateFornitore(req, res) {
-  const { id } = req;
+  const { id } = req.ids;
 
   try {
     const rowExists = await recordExistById("fornitori", id);
@@ -101,7 +104,7 @@ export async function updateFornitore(req, res) {
 
 // DELETE rimuovi fornitore
 export async function deleteFornitore(req, res) {
-  const { id } = req;
+  const { id } = req.ids;
 
   try {
     const rowExists = await recordExistById("fornitori", id);

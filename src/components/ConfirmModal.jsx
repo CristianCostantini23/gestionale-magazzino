@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function ConfirmModal({
   open,
@@ -7,28 +7,14 @@ export default function ConfirmModal({
   onDelete,
   elementToDelete,
   message,
+  errorMessage,
 }) {
-  const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    if (open) {
-      setErrorMessage("");
-    }
-  }, [open, elementToDelete]);
-
-  const handleConfirm = async () => {
-    try {
-      await onDelete(elementToDelete.id);
-      setErrorMessage("");
-      onClose(false);
-    } catch (error) {
-      if (error.messaggio) {
-        setErrorMessage(error.messaggio);
-        console.log(error.response?.status);
-      } else {
-        setErrorMessage("Errore durante l'eliminazione");
-      }
-    }
+  const handleConfirm = () => {
+    onDelete(elementToDelete.id)
+      .unwrap()
+      .then(() => {
+        onClose(false);
+      });
   };
 
   return (
@@ -39,6 +25,7 @@ export default function ConfirmModal({
           <Dialog.Title className="text-lg font-semibold mb-4">
             Conferma eliminazione
           </Dialog.Title>
+
           <div className="mb-6">
             <p>{message}</p>
           </div>
@@ -52,10 +39,7 @@ export default function ConfirmModal({
           <div className="flex justify-end gap-2">
             <Dialog.Close asChild>
               <button
-                onClick={() => {
-                  onClose(false);
-                  setErrorMessage("");
-                }}
+                onClick={() => onClose(false)}
                 className="px-4 py-2 border rounded hover:bg-gray-100"
               >
                 Annulla
