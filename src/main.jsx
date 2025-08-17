@@ -9,6 +9,12 @@ import Homepage from "./pages/Homepage.jsx";
 import PaginaStrutture from "./pages/paginaStrutture.jsx";
 import InventarioStruttura from "./pages/InventarioStruttura.jsx";
 import PaginaFornitori from "./pages/paginaFornitori.jsx";
+import PaginaVendite from "./pages/PaginaVendite.jsx";
+import AggiungiVendita from "./pages/AggiungiVendita.jsx";
+import PaginaScarichi from "./pages/PaginaScarichi.jsx";
+import AggiungiScarico from "./pages/AggiungiScarico.jsx";
+import PaginaMovimenti from "./pages/PaginaMovimenti.jsx";
+import AggiungiMovimento from "./pages/AggiungiMovimento.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +40,36 @@ const router = createBrowserRouter([
       {
         path: "fornitori",
         element: <PaginaFornitori />,
+      },
+      // VENDITE
+      {
+        path: "vendite",
+        element: <PaginaVendite />,
+      },
+      // AGGIUNGI VENDITA
+      {
+        path: "/vendite/aggiungi",
+        element: <AggiungiVendita />,
+      },
+      // SCARICHI
+      {
+        path: "scarichi",
+        element: <PaginaScarichi />,
+      },
+      // AGGIUNGI SCARICO
+      {
+        path: "/scarichi/aggiungi",
+        element: <AggiungiScarico />,
+      },
+      // MOVIMENTI
+      {
+        path: "movimenti",
+        element: <PaginaMovimenti />,
+      },
+      // AGGIUNGI MOVIMENTO
+      {
+        path: "/movimenti/aggiungi",
+        element: <AggiungiMovimento />,
       },
     ],
   },

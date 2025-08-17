@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ListaRisultati from "../components/ListaRisultati.jsx";
-import ConfirmModal from "../components/ConfirmModal.jsx";
 import { useNavigate } from "react-router-dom";
-import {
-  fetchVendite,
-  fetchVenditaById,
-  postVendita,
-} from "../store/slices/sliceVendite.js";
+import { fetchVendite } from "../store/slices/sliceVendite.js";
 import { ListCollapse, ShoppingCart } from "lucide-react";
 
-export default function PaginaStrutture() {
+export default function PaginaVendite() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const vendite = useSelector((state) => state.strutture.vendite);
+  const vendite = useSelector((state) => state.vendite.vendite);
   const { hasError, errorMessage } = useSelector((state) => state.vendite);
 
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -49,6 +44,9 @@ export default function PaginaStrutture() {
         campi={campi}
         isStrutturePage={false}
         updateAction={null}
+        postAction={null}
+        formFields={null}
+        canAdd={false}
       />
 
       {/* <ConfirmModal

@@ -84,8 +84,8 @@ export const deleteFornitore = createAsyncThunk(
   "fornitori/delete",
   async (id, { dispatch, rejectWithValue }) => {
     try {
-      await deleteData(`/api/suppliers/${id}`);
-      const fornitori = await dispatch(fetchfornitori()).unwrap();
+      await deleteData(`/api/fornitori/${id}`);
+      const fornitori = await dispatch(fetchFornitori()).unwrap();
       return fornitori;
     } catch (error) {
       if (error.response && error.response.data) {

@@ -4,6 +4,7 @@ import {
   fetchStrutture,
   updateStruttura,
   deleteStruttura,
+  postStruttura,
 } from "../store/slices/sliceStrutture.js";
 import ListaRisultati from "../components/ListaRisultati.jsx";
 import ConfirmModal from "../components/ConfirmModal.jsx";
@@ -57,6 +58,20 @@ export default function PaginaStrutture() {
 
   const campi = ["nome", "tipo", "indirizzo"];
 
+  const formFields = [
+    { name: "nome", label: "Nome struttura", type: "text" },
+    { name: "indirizzo", label: "Indirizzo", type: "text" },
+    {
+      name: "tipo",
+      label: "Tipo struttura",
+      type: "select",
+      options: [
+        { value: "magazzino", label: "Magazzino" },
+        { value: "negozio", label: "Negozio" },
+      ],
+    },
+  ];
+
   return (
     <>
       <ListaRisultati
@@ -69,6 +84,9 @@ export default function PaginaStrutture() {
         campi={campi}
         isStrutturePage={true}
         updateAction={updateStruttura}
+        postAction={postStruttura}
+        formFields={formFields}
+        canAdd={true}
       />
 
       <ConfirmModal

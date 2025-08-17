@@ -7,8 +7,9 @@ import {
   fetchFornitori,
   updateFornitore,
   deleteFornitore,
+  postFornitore,
 } from "../store/slices/sliceFornitori.js";
-import { Truck, Edit, Trash2 } from "lucide-react";
+import { Package, Edit, Trash2 } from "lucide-react";
 
 export default function PaginaFornitori() {
   const dispatch = useDispatch();
@@ -45,9 +46,27 @@ export default function PaginaFornitori() {
     },
   ];
 
-  const icone = { default: <Truck size={22} className="text-white" /> };
+  const icone = { default: <Package size={22} className="text-white" /> };
 
   const campi = ["nome", "cell", "email"];
+
+  const formFields = [
+    {
+      name: "nome",
+      label: "nome",
+      type: "text",
+    },
+    {
+      name: "cell",
+      label: "cellulare",
+      type: "text",
+    },
+    {
+      name: "email",
+      label: "e-mail",
+      type: "email",
+    },
+  ];
 
   return (
     <>
@@ -61,6 +80,9 @@ export default function PaginaFornitori() {
         campi={campi}
         isStrutturePage={false}
         updateAction={updateFornitore}
+        postAction={postFornitore}
+        formFields={formFields}
+        canAdd={true}
       />
 
       <ConfirmModal
