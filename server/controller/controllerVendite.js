@@ -8,15 +8,15 @@ import { buildInsertQuery } from "../utils/queryBuilder.js";
 export async function postVendita(req, res) {
   try {
     const parsedData = schemaVendite.parse(req.body);
-    const { strutturaId, prodotti } = parsedData;
+    const { strutturaId, prodotti, dataVendita } = parsedData;
 
     const conn = await pool.getConnection();
     try {
       await conn.beginTransaction();
 
       const [saleResult] = await conn.query(
-        buildInsertQuery("vendite", ["struttura_id"]),
-        [strutturaId]
+        buildInsertQuery("vendite", ["struttura_id", "data_vendita"]),
+        [strutturaId, dataVendita]
       );
 
       const venditaId = saleResult.insertId;
@@ -83,9 +83,9 @@ export async function postVendita(req, res) {
 // GET ricevo i dettagli di una singola vendita per ID
 export async function getDettagliVendita(req, res) {
   try {
-    const { id } = req.ids;
+    const { venditaId } = req.ids;
 
-    if (!(await recordExistById(id))) {
+    if (!(await recordExistById("vendita_prodotto", venditaId))) {
       return res.status(404).json({
         error: "impossibile trovare i dettagli relativi alla vendita",
       });
@@ -94,14 +94,14 @@ export async function getDettagliVendita(req, res) {
     const [rows] = await pool.query(
       `
       SELECT 
-        p.nome AS prodotto_nome,
+        p.nome AS nome_prodotto,
         vp.quantita,
         vp.prezzo_unitario
       FROM vendita_prodotto vp
       JOIN prodotti p ON vp.prodotto_id = p.id
       WHERE vp.vendita_id = ?
     `,
-      [id]
+      [venditaId]
     );
 
     if (!rows[0] || rows.length <= 0) {
@@ -110,10 +110,7 @@ export async function getDettagliVendita(req, res) {
         .json({ error: "impossibile trovare i dettagli della vendita" });
     }
 
-    res.status(200).json({
-      vendita_id: id,
-      prodotti: rows,
-    });
+    res.status(200).json(rows);
   } catch (error) {
     handleControllerError(error, res);
   }
@@ -125,13 +122,13 @@ export async function getAllVendite(req, res) {
     const [rows] = await pool.query(`
       SELECT 
         v.id,
-        e.nome_struttura,
+        s.nome AS nome_struttura,
         v.data_vendita,
         SUM(vp.quantita * vp.prezzo_unitario) AS totale
       FROM vendite v
-      JOIN entita e ON v.entita_id = e.id
+      JOIN strutture s ON v.struttura_id = s.id
       JOIN vendita_prodotto vp ON v.id = vp.vendita_id
-      GROUP BY v.id, e.nome_struttura, v.data_vendita
+      GROUP BY v.id, s.nome, v.data_vendita
       ORDER BY v.data_vendita DESC
     `);
 
@@ -165,6 +162,42 @@ export async function getAllDettagliVendite(req, res) {
       JOIN prodotti p ON vp.prodotto_id = p.id
       ORDER BY v.data_vendita DESC, v.id
     `);
+
+    res.status(200).json(rows);
+  } catch (error) {
+    handleControllerError(error, res);
+  }
+}
+
+// GET ricevi strutture per popolare select
+export async function popolaSelectStrutture(req, res) {
+  try {
+    const [rows] = await pool.query(`
+      SELECT id, nome FROM strutture   
+    `);
+
+    res.status(200).json(rows);
+  } catch (error) {
+    handleControllerError(error, res);
+  }
+}
+
+export async function popolaSelectProdotti(req, res) {
+  try {
+    const { strutturaId } = req.ids;
+
+    const [rows] = await pool.query(
+      `
+      SELECT 
+        p.id, 
+        p.nome, 
+        i.quantita 
+      FROM inventari i
+      JOIN prodotti p ON p.id = i.prodotto_id
+      WHERE i.struttura_id = ?
+      `,
+      [strutturaId]
+    );
 
     res.status(200).json(rows);
   } catch (error) {

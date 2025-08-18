@@ -49,14 +49,17 @@ export async function postStruttura(req, res) {
     if (duplicateFields.length > 0) {
       return res
         .status(400)
-        .json({ error: "valori duplicati", duplicates: duplicateFields });
+        .json({
+          error: "ci sono valori duplicati",
+          duplicates: duplicateFields,
+        });
     }
 
     const query = buildInsertQuery("strutture", ["nome", "tipo", "indirizzo"]);
     const values = [nome, tipo, indirizzo];
 
     const [result] = await pool.query(query, values);
-    res.status(201).json({ message: "struttura creata" });
+    res.status(201).json({ message: "struttura creata con successo" });
   } catch (error) {
     handleControllerError(error, res);
   }
@@ -83,7 +86,10 @@ export async function updateStruttura(req, res) {
     if (duplicateFields.length > 0) {
       return res
         .status(400)
-        .json({ error: "valori duplicati", duplicates: duplicateFields });
+        .json({
+          error: "ci sono valori duplicati",
+          duplicates: duplicateFields,
+        });
     }
 
     const query = buildUpdateQuery("strutture", ["nome", "tipo", "indirizzo"]);

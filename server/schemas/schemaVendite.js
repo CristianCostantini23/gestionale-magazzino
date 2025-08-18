@@ -8,6 +8,12 @@ export const schemaVendite = z.object({
     })
     .int("L'ID dell'entità deve essere un numero intero")
     .positive("L'ID dell'entità deve essere maggiore di zero"),
+  dataVendita: z
+    .string({
+      required_error: "La data di vendita è obbligatoria",
+      invalid_type_error: "La data di vendita deve essere una stringa",
+    })
+    .regex(/^\d{2}-\d{2}-\d{4}$/, "La data deve essere in formato GG-MM-AAAA"),
 
   prodotti: z
     .array(

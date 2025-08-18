@@ -49,9 +49,10 @@ export async function postFornitore(req, res) {
     });
 
     if (duplicateFields.length > 0) {
-      return res
-        .status(400)
-        .json({ error: "valori duplicati", duplicates: duplicateFields });
+      return res.status(400).json({
+        error: "ci sono valori duplicati",
+        duplicates: duplicateFields,
+      });
     }
 
     const query = buildInsertQuery("fornitori", ["nome", "cell", "email"]);
@@ -85,7 +86,10 @@ export async function updateFornitore(req, res) {
     if (duplicateFields.length > 0) {
       return res
         .status(400)
-        .json({ error: "valori duplicati", duplicates: duplicateFields });
+        .json({
+          error: "ci sono valori duplicati",
+          duplicates: duplicateFields,
+        });
     }
 
     const query = buildUpdateQuery("fornitori", ["nome", "telefono", "email"]);

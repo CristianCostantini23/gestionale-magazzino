@@ -48,15 +48,6 @@ export default function PaginaVendite() {
         formFields={null}
         canAdd={false}
       />
-
-      {/* <ConfirmModal
-        open={openConfirm}
-        onClose={setOpenConfirm}
-        elementToDelete={selectedItem}
-        message={`Sei sicuro di voler eliminare "${selectedItem?.nome || ""}"?`}
-        onDelete={handleDelete}
-        errorMessage={errorMessage}
-      /> */}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { ArrowLeft, ArrowRight, CirclePlus, CircleX, Save } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { data } from "react-router-dom";
@@ -76,7 +76,7 @@ export default function ListaRisultati({
     <>
       <div className="flex flex-row justify-between">
         <div className="flex flex-row items-center gap-2">
-          {/* <<<<<<<<<<<<div className="relative group">
+          {/* <div className="relative group">
             <button
               className="p-2 rounded-full hover:bg-gray-600 transition"
               onClick={() => {
@@ -136,7 +136,7 @@ export default function ListaRisultati({
 
       <div className="flex flex-row overflow-y-auto flex-wrap justify-center w-[100%] h-[80%]">
         {hasError && (
-          <div className="w-full p-3 mb-4 rounded bg-red-600 text-white text-center">
+          <div className="m-4 text-red-600 text-xl text-center">
             {errorMessage || "Si è verificato un errore."}
           </div>
         )}

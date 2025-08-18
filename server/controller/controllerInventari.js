@@ -5,6 +5,15 @@ export async function getInventarioByStruttura(req, res) {
   try {
     const { strutturaId } = req.ids;
 
+    const [strutturaRows] = await pool.query(
+      `SELECT * FROM strutture WHERE id = ?`,
+      [strutturaId]
+    );
+
+    const nomeStruttura = strutturaRows[0]?.nome;
+    const tipoStruttura = strutturaRows[0]?.tipo;
+    const indirizzoStruttura = strutturaRows[0]?.indirizzo;
+
     const [rows] = await pool.query(
       ` SELECT i.id AS inventario_id, p.nome AS nome_prodotto, p.descrizione, p.codice, i.quantita
         FROM inventari i
@@ -21,15 +30,6 @@ export async function getInventarioByStruttura(req, res) {
         inventario: [],
       });
     }
-
-    const [strutturaRows] = await pool.query(
-      `SELECT * FROM strutture WHERE id = ?`,
-      [strutturaId]
-    );
-
-    const nomeStruttura = strutturaRows[0]?.nome;
-    const tipoStruttura = strutturaRows[0]?.tipo;
-    const indirizzoStruttura = strutturaRows[0]?.indirizzo;
 
     res.status(200).json({
       nomeStruttura,
