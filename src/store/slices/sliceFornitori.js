@@ -73,7 +73,7 @@ export const updateFornitore = createAsyncThunk(
         return rejectWithValue(error.response.data);
       }
       return rejectWithValue({
-        erro: "Errore durante l'aggiornamento del fornitore.",
+        error: "Errore durante l'aggiornamento del fornitore.",
       });
     }
   }

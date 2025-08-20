@@ -6,11 +6,27 @@ import {
   fetchDettagliScaricoById,
   postScarico,
 } from "../controller/controllerScarichi.js";
+import { castToNumber } from "../middleware/castToNumber.js";
 
 const routerScarichi = express.Router();
 
 routerScarichi.get("/", dateFormatter, fetchAllScarichi);
-routerScarichi.post("/", dateFormatter, postScarico);
+routerScarichi.post(
+  "/",
+  castToNumber(["body"], {
+    include: [
+      "strutturaId",
+      "fornitoreId",
+      "prodottoId",
+      "quantita",
+      "prezzoUnitario",
+    ],
+    deep: true,
+    strictDecimal: true,
+  }),
+  dateFormatter,
+  postScarico
+);
 routerScarichi.get(
   "/:scaricoId",
   checkIdMiddleware,

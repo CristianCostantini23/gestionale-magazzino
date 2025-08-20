@@ -37,8 +37,8 @@ export default function AggiungiVendita() {
   useEffect(() => {
     if (strutturaId) {
       axios
-        .get(`/api/vendite/popolaProdotti/${strutturaId}`)
-        .then((res) => setProdotti(res.data))
+        .get(`/api/popola/prodotti/${strutturaId}`)
+        .then((res) => setProdotti(res.data.filter((p) => p.quantita > 0)))
         .catch(() => setProdotti([]));
     }
   }, [strutturaId]);

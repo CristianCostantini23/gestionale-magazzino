@@ -12,8 +12,8 @@ const routerFornitori = express.Router();
 
 routerFornitori.get("/", getAllFornitori);
 routerFornitori.post("/", postFornitore);
-routerFornitori.get("/:id", checkIdMiddleware, getFornitoreById);
-routerFornitori.put("/:id", checkIdMiddleware, updateFornitore);
+routerFornitori.get("/:fornitoreId", checkIdMiddleware, getFornitoreById);
+routerFornitori.put("/:fornitoreId", checkIdMiddleware, updateFornitore);
 routerFornitori.delete("/:id", checkIdMiddleware, deleteFornitore);
 
 export default routerFornitori;

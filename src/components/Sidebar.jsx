@@ -8,10 +8,12 @@ import {
   Package,
   ArrowLeftRight,
   ChevronDown,
+  Barcode,
 } from "lucide-react";
 
 const links = [
   { to: "/", label: "Home", icon: <Home size={24} /> },
+  { to: "/prodotti", label: "Prodotti", icon: <Barcode size={24} /> },
   { to: "/strutture", label: "Strutture", icon: <Building2 size={24} /> },
   { to: "/fornitori", label: "Fornitori", icon: <Package size={24} /> },
   {

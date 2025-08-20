@@ -15,6 +15,7 @@ import PaginaScarichi from "./pages/PaginaScarichi.jsx";
 import AggiungiScarico from "./pages/AggiungiScarico.jsx";
 import PaginaMovimenti from "./pages/PaginaMovimenti.jsx";
 import AggiungiMovimento from "./pages/AggiungiMovimento.jsx";
+import PaginaProdotti from "./pages/PaginaProdotti.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
       {
         path: "strutture",
         element: <PaginaStrutture />,
+      },
+      // PRODOTTI
+      {
+        path: "prodotti",
+        element: <PaginaProdotti />,
       },
       // INVENTARI
       {

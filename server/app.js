@@ -6,6 +6,8 @@ import routerVendite from "./routers/vendite.js";
 import routerInventari from "./routers/inventari.js";
 import routerMovimenti from "./routers/movimenti.js";
 import routerScarichi from "./routers/scarichi.js";
+import routerPopola from "./routers/popola.js";
+import routerProdotti from "./routers/prodotti.js";
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use("/api/vendite", routerVendite);
 app.use("/api/inventari", routerInventari);
 app.use("/api/movimenti", routerMovimenti);
 app.use("/api/scarichi", routerScarichi);
+app.use("/api/popola", routerPopola);
+app.use("/api/prodotti", routerProdotti);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
