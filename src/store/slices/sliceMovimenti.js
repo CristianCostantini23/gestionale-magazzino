@@ -59,7 +59,12 @@ const sliceMovimenti = createSlice({
   name: "movimenti",
   initialState: {
     movimenti: [],
-    selectedMovimento: null,
+    selectedMovimento: {
+      struttura_origine: "",
+      struttura_destinazione: "",
+      data_trasferimento: "",
+      prodotti: [],
+    },
     isLoading: false,
     hasError: false,
     errorMessage: null,

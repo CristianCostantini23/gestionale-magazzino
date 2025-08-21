@@ -95,6 +95,7 @@ export async function getDettagliVendita(req, res) {
       `
       SELECT 
         p.nome AS nome_prodotto,
+        p.codice,
         vp.quantita,
         vp.prezzo_unitario
       FROM vendita_prodotto vp
@@ -104,13 +105,33 @@ export async function getDettagliVendita(req, res) {
       [venditaId]
     );
 
+    const [intestazione] = await pool.query(
+      `
+        SELECT
+         s.nome AS nome_struttura,
+         v.data_vendita
+        FROM vendite v
+        JOIN strutture s ON v.struttura_id = s.id
+        WHERE v.id = ?
+      `,
+      [venditaId]
+    );
+
     if (!rows[0] || rows.length <= 0) {
       return res
         .status(404)
         .json({ error: "impossibile trovare i dettagli della vendita" });
     }
 
-    res.status(200).json(rows);
+    if (!intestazione[0]) {
+      return res.status(404).json({ error: "intestazione non trovata" });
+    }
+
+    res.status(200).json({
+      nome_struttura: intestazione[0].nome_struttura,
+      data_vendita: intestazione[0].data_vendita,
+      prodotti: rows,
+    });
   } catch (error) {
     handleControllerError(error, res);
   }

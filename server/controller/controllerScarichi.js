@@ -2,6 +2,7 @@ import pool from "../db/db.js";
 import { handleControllerError } from "../utils/handleControllerError.js";
 import { schemaScarichi } from "../schemas/schemaScarichi.js";
 import { buildInsertQuery } from "../utils/queryBuilder.js";
+import { recordExistById } from "../utils/dataValidation.js";
 
 // GET ricevi lista di tutti gli scarichi
 export async function fetchAllScarichi(req, res) {
@@ -48,10 +49,23 @@ export async function fetchDettagliScaricoById(req, res) {
           s.id,
           p.nome,
           p.codice,
-          s.quantita
+          s.quantita,
+          s.prezzo_unitario
         FROM scarico_merce_dettaglio s
         JOIN prodotti p ON s.prodotto_id = p.id
         WHERE scarico_id = ? 
+    `,
+      [scaricoId]
+    );
+
+    const [intestazione] = await pool.query(
+      `
+      SELECT 
+       st.nome AS nome_struttura,
+       s.data_scarico
+      FROM scarichi_merce s
+      JOIN strutture st ON s.struttura_id = st.id
+      WHERE s.id = ?  
     `,
       [scaricoId]
     );
@@ -62,7 +76,15 @@ export async function fetchDettagliScaricoById(req, res) {
         .json({ error: "impossibile trovare i dettagli dello scarico merce" });
     }
 
-    res.status(200).json(rows);
+    if (!intestazione[0]) {
+      return res.status(404).json({ error: "intestazione non trovata" });
+    }
+
+    res.status(200).json({
+      nome_struttura: intestazione[0].nome_struttura,
+      data_scarico: intestazione[0].data_scarico,
+      prodotti: rows,
+    });
   } catch (error) {
     handleControllerError(error, res);
   }

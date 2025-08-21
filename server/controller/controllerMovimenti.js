@@ -60,13 +60,38 @@ export async function getDettagliMovimentoById(req, res) {
       [movimentoId]
     );
 
+    const [intestazione] = await pool.query(
+      `
+      SELECT
+        so.nome AS struttura_origine,
+        sd.nome AS struttura_destinazione,
+        t.data_trasferimento
+      FROM trasferimenti_merce t
+      JOIN strutture so ON t.struttura_origine = so.id
+      JOIN strutture sd ON t.struttura_destinazione = sd.id
+      WHERE t.id = ?;
+    `,
+      [movimentoId]
+    );
+
     if (!rows[0] || rows.length <= 0) {
       return res
         .status(404)
         .json({ error: "impossibile trovare i dettagli del movimento merce" });
     }
 
-    res.status(200).json(rows);
+    if (!intestazione[0]) {
+      return res.status(404).json({ error: "intestazione non trovata" });
+    }
+
+    res
+      .status(200)
+      .json({
+        struttura_origine: intestazione[0].struttura_origine,
+        struttura_destinazione: intestazione[0].struttura_destinazione,
+        data_trasferimento: intestazione[0].data_trasferimento,
+        prodotti: rows,
+      });
   } catch (error) {
     handleControllerError(error, res);
   }

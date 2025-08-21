@@ -58,7 +58,7 @@ export const postVendita = createAsyncThunk(
 const sliceVendite = createSlice({
   name: "vendite",
   initialState: {
-    vendite: [],
+    vendite: { nome_struttura: "", data_vendita: "", prodotti: [] },
     selectedVendita: null,
     isLoading: false,
     hasError: false,

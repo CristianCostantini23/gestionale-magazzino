@@ -30,7 +30,7 @@ export const fetchScaricoById = createAsyncThunk(
         return rejectWithValue(error.response.data);
       }
       return rejectWithValue({
-        error: "Errore durante il recupero dei dati delle vendite.",
+        error: "Errore durante il recupero dei dettagli dello scarico.",
       });
     }
   }
@@ -59,7 +59,7 @@ const sliceScarichi = createSlice({
   name: "scarichi",
   initialState: {
     scarichi: [],
-    selectedScarico: null,
+    selectedScarico: { nome_struttura: "", data_scarico: "", prodotti: [] },
     isLoading: false,
     hasError: false,
     errorMessage: null,

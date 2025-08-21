@@ -16,6 +16,9 @@ import AggiungiScarico from "./pages/AggiungiScarico.jsx";
 import PaginaMovimenti from "./pages/PaginaMovimenti.jsx";
 import AggiungiMovimento from "./pages/AggiungiMovimento.jsx";
 import PaginaProdotti from "./pages/PaginaProdotti.jsx";
+import { DettagliScarico } from "./pages/DettagliScarico.jsx";
+import { DettagliMovimento } from "./pages/DettagliMovimento.jsx";
+import { Dettaglivendita } from "./pages/DettagliVendita.jsx";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +60,11 @@ const router = createBrowserRouter([
         path: "/vendite/aggiungi",
         element: <AggiungiVendita />,
       },
+      // DETTAGLI VENDITA
+      {
+        path: "/vendite/:venditaId",
+        element: <Dettaglivendita />,
+      },
       // SCARICHI
       {
         path: "scarichi",
@@ -67,6 +75,11 @@ const router = createBrowserRouter([
         path: "/scarichi/aggiungi",
         element: <AggiungiScarico />,
       },
+      // DETTAGLI SCARICO
+      {
+        path: "/scarichi/:scaricoId",
+        element: <DettagliScarico />,
+      },
       // MOVIMENTI
       {
         path: "movimenti",
@@ -76,6 +89,11 @@ const router = createBrowserRouter([
       {
         path: "/movimenti/aggiungi",
         element: <AggiungiMovimento />,
+      },
+      // DETTAGLI MOVIMENTO
+      {
+        path: "/movimenti/:movimentoId",
+        element: <DettagliMovimento />,
       },
     ],
   },

@@ -22,7 +22,7 @@ export default function PaginaScarichi() {
     {
       label: "Dettagli scarico",
       icon: <ListCollapse size={18} />,
-      onClick: (item) => console.log("Dettagli", item),
+      onClick: (item) => navigate(`/scarichi/${item.scarico_id}`, item),
     },
   ];
 
@@ -32,7 +32,6 @@ export default function PaginaScarichi() {
 
   const campi = [
     "nome_struttura",
-    "data_scarico",
     "data_scarico",
     "nome_fornitore",
     "documento_riferimento",
