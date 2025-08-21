@@ -84,7 +84,7 @@ export function FormProdotti() {
           />
 
           {hasError && (
-            <span className="text-red-400 text-sm">{errorMessage.error}</span>
+            <span className="text-red-400 text-sm">{errorMessage}</span>
           )}
 
           {successMessage && (

@@ -2,6 +2,13 @@
 // prende il nome della tabella
 // la passo come primo argomento di pool.query
 export function buildGetAllQuery(tableName) {
+  if (
+    tableName === "fornitori" ||
+    tableName === "strutture" ||
+    tableName === "prodotti"
+  ) {
+    return `SELECT * FROM \`${tableName}\` WHERE attivo = true`;
+  }
   return `SELECT * FROM \`${tableName}\``;
 }
 
@@ -34,5 +41,12 @@ export function buildUpdateQuery(tableName, fields) {
 // prende il nome della tabella ed id della riga da cancellare
 // la passo come primo argomento di pool.query
 export function buildDeleteQuery(tableName) {
+  if (
+    tableName === "fornitori" ||
+    tableName === "strutture" ||
+    tableName === "prodotti"
+  ) {
+    return `UPDATE \`${tableName}\` SET attivo = false WHERE id = ?`;
+  }
   return `DELETE FROM \`${tableName}\` WHERE id = ?`;
 }

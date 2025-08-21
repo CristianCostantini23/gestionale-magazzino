@@ -47,12 +47,10 @@ export async function postStruttura(req, res) {
       indirizzo,
     });
     if (duplicateFields.length > 0) {
-      return res
-        .status(400)
-        .json({
-          error: "ci sono valori duplicati",
-          duplicates: duplicateFields,
-        });
+      return res.status(400).json({
+        error: "ci sono valori duplicati",
+        duplicates: duplicateFields,
+      });
     }
 
     const query = buildInsertQuery("strutture", ["nome", "tipo", "indirizzo"]);
@@ -84,12 +82,10 @@ export async function updateStruttura(req, res) {
       id
     );
     if (duplicateFields.length > 0) {
-      return res
-        .status(400)
-        .json({
-          error: "ci sono valori duplicati",
-          duplicates: duplicateFields,
-        });
+      return res.status(400).json({
+        error: "ci sono valori duplicati",
+        duplicates: duplicateFields,
+      });
     }
 
     const query = buildUpdateQuery("strutture", ["nome", "tipo", "indirizzo"]);
@@ -114,6 +110,20 @@ export async function deleteStruttura(req, res) {
     const rowExists = await recordExistById("strutture", id);
     if (!rowExists) {
       return res.status(404).json({ error: "struttura non trovata" });
+    }
+
+    const [hasinventario] = await pool.query(
+      "SELECT * FROM inventari WHERE struttura_id = ?",
+      [id]
+    );
+
+    if (hasinventario.length > 0) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "impossibile procedere con l'eliminazione. Ci sono prodotti ancora in inventario",
+        });
     }
 
     const [result] = await pool.query(buildDeleteQuery("strutture"), [id]);

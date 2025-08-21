@@ -13,7 +13,7 @@ export function ListaDettagli({ dati, campi, hasError, errorMessage }) {
           shadow-xl shadow-gray-700
         "
       >
-        <h1>{errorMessage.error || "Errore durante il caricamento"}</h1>
+        <h1>{errorMessage || "Errore durante il caricamento"}</h1>
       </div>
     );
   }

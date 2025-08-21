@@ -50,7 +50,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="max-w-64 w-1/3 bg-gradient-to-t from-gray-700 to-gray-500 text-white py-3">
+    <aside className="max-w-64 w-1/3 bg-gradient-to-t from-gray-700 to-gray-500 text-white py-3 overflow-y-auto">
       <nav className="flex flex-col space-y-2">
         {links.map((link) =>
           link.children ? (

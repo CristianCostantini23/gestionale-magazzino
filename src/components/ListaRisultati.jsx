@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, CirclePlus, CircleX, Save } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { data } from "react-router-dom";
 
 export default function ListaRisultati({
   titolo,
@@ -21,11 +20,37 @@ export default function ListaRisultati({
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({});
   const [localError, setLocalError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSerach, setDebouncedsearch] = useState("");
 
   const [isAddFormShowing, setIsAddFormShowing] = useState(false);
   const [addFormData, setAddFormData] = useState({});
   const [addFormError, setAddFormError] = useState(null);
   const [postSuccessMessage, setPostSuccessMessage] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedsearch(searchTerm);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchTerm]);
+
+  const datiFiltrati =
+    dati.length > 0
+      ? dati.filter((d) => {
+          if (!debouncedSerach) return true;
+
+          const lowerSearch = debouncedSerach.toLowerCase();
+
+          if (d.codice && d.codice.toLowerCase().includes(lowerSearch))
+            return true;
+
+          return d.nome.toLowerCase().includes(lowerSearch);
+        })
+      : [];
 
   const handleAddFormChange = (e, campo) => {
     setAddFormData((prev) => ({
@@ -42,7 +67,7 @@ export default function ListaRisultati({
       setTimeout(() => {
         setPostSuccessMessage(null);
         setIsAddFormShowing(false);
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.log("errore durante la richiesta POST", error);
       setAddFormError(error || "Impossibile salvare i dati");
@@ -72,7 +97,7 @@ export default function ListaRisultati({
     }
   };
 
-  if (dati.length === 0) {
+  if (datiFiltrati.length === 0) {
     return (
       <>
         <div className="flex flex-row justify-between">
@@ -263,7 +288,15 @@ export default function ListaRisultati({
         </div>
       </div>
 
-      <div className="flex flex-row overflow-y-auto flex-wrap justify-center w-[100%] h-[80%]">
+      <input
+        type="text"
+        placeholder="Cerca..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="p-2 block mx-auto rounded-3xl bg-gradient-to-r from-gray-700 to-gray-500 text-white border border-gray-300 w-[50%] h-[10%] text-center"
+      />
+
+      <div className="flex flex-row overflow-y-auto flex-wrap justify-center gap-2 w-[100%] h-[80%]">
         {hasError && (
           <div className="m-4 text-red-600 text-xl text-center">
             {errorMessage || "Si è verificato un errore."}
@@ -333,7 +366,7 @@ export default function ListaRisultati({
           </div>
         )}
 
-        {dati.map((d) => (
+        {datiFiltrati.map((d) => (
           <div
             key={d.id}
             className="rounded-lg bg-gradient-to-t from-gray-700 to-gray-500 text-white

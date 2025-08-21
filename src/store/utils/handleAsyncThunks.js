@@ -11,7 +11,10 @@ export function handleAsyncThunks(builder, asyncThunk, onFulFilled) {
       state.isLoading = false;
       state.hasError = true;
       state.errorMessage =
-        action.payload?.error || action.payload || "Errore sconosciuto";
+        action.payload?.error ||
+        action.payload.message ||
+        action.payload ||
+        "Errore sconosciuto";
     })
     .addCase(asyncThunk.fulfilled, (state, action) => {
       state.isLoading = false;
