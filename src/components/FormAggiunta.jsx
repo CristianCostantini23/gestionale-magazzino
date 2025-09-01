@@ -9,6 +9,7 @@ import {
   Trash2,
   Save,
   CircleX,
+  DollarSign,
 } from "lucide-react";
 
 export default function FormAggiunta({
@@ -21,6 +22,7 @@ export default function FormAggiunta({
 }) {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({ prodotti: [] });
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,7 +60,16 @@ export default function FormAggiunta({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (formData.strutturaOrigineId === formData.strutturaDestinazioneId) {
+      alert("Le due strutture non possono essere uguali");
+      return;
+    }
+
     dispatch(onSubmitAction(formData));
+    setSuccessMessage("Voce aggiunta con successo");
+    setTimeout(() => setSuccessMessage(null), 1000);
+    setFormData({ prodotti: [] });
   };
 
   return (
@@ -116,6 +127,16 @@ export default function FormAggiunta({
                           : prev.strutturaDestinazioneId,
                     }));
                   }
+
+                  if (name === "strutturaDestinazioneId") {
+                    setFormData((prev) => ({
+                      ...prev,
+                      strutturaOrigineId:
+                        prev.strutturaOrigineId === e.target.value
+                          ? ""
+                          : prev.strutturaOrigineId,
+                    }));
+                  }
                 }}
                 className="bg-gray-800 text-white p-2 rounded w-full"
               >
@@ -163,7 +184,8 @@ export default function FormAggiunta({
                 <option value="">Seleziona</option>
                 {options["prodottoId"]?.map((opt) => (
                   <option key={opt.value} value={opt.value}>
-                    {opt.label}
+                    {opt.label}{" "}
+                    {opt.quantita ? `(Disponibili: ${opt.quantita})` : ""}
                   </option>
                 ))}
               </select>
@@ -177,25 +199,72 @@ export default function FormAggiunta({
                 <input
                   type="number"
                   min="1"
-                  max={
-                    titolo === "Nuovo Movimento Merce"
-                      ? options["prodottoId"].quantita
-                      : null
-                  }
+                  max={(() => {
+                    const prodottoSelezionato = options["prodottoId"]?.find(
+                      (opt) => opt.value === p.prodottoId
+                    );
+                    return prodottoSelezionato
+                      ? prodottoSelezionato.quantita
+                      : undefined;
+                  })()}
                   value={p.quantita}
-                  onChange={(e) =>
-                    handleProdottoChange(index, "quantita", e.target.value)
-                  }
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    if (value < 1) value = 1;
+
+                    const prodottoSelezionato = options["prodottoId"]?.find(
+                      (opt) => String(opt.value) === String(p.prodottoId)
+                    );
+                    const maxValue = prodottoSelezionato
+                      ? prodottoSelezionato.quantita
+                      : Infinity;
+
+                    if (value > maxValue) value = maxValue;
+
+                    handleProdottoChange(index, "quantita", value);
+                  }}
+                  onBlur={() => {
+                    const prodottoSelezionato = options["prodottoId"]?.find(
+                      (opt) => String(opt.value) === String(p.prodottoId)
+                    );
+
+                    const maxValue = prodottoSelezionato
+                      ? prodottoSelezionato.quantita
+                      : 1;
+
+                    let value = Number(p.quantita);
+
+                    if (isNaN(value) || value < 1) {
+                      value = 1;
+                    } else if (value > maxValue) {
+                      value = maxValue;
+                    }
+
+                    handleProdottoChange(index, "quantita", value);
+                  }}
                   className="bg-gray-800 text-white p-2 rounded w-full"
                   required
                 />
+
+                {(() => {
+                  const maxValue = options["prodottoId"]?.find(
+                    (opt) => opt.value === p.prodottoId
+                  )?.quantita;
+                  if (maxValue && p.quantita === maxValue) {
+                    return (
+                      <p className="text-sm text-yellow-400">
+                        Quantità massima disponibile raggiunta ({maxValue})
+                      </p>
+                    );
+                  }
+                })()}
               </div>
             )}
 
             {campiProdotti.includes("prezzoUnitario") && (
               <div>
                 <label className="flex items-center gap-1 mb-1">
-                  <Package className="w-4 h-4" /> Prezzo unitario
+                  <DollarSign className="w-4 h-4" /> Prezzo unitario
                 </label>
                 <input
                   type="number"
@@ -239,6 +308,12 @@ export default function FormAggiunta({
         </button>
       </div>
 
+      {successMessage && (
+        <div className="w-full p-3 mb-2 rounded bg-green-600 text-white text-center">
+          {successMessage}
+        </div>
+      )}
+
       <div className="flex justify-end gap-2 mt-4">
         <button
           type="button"
@@ -249,6 +324,9 @@ export default function FormAggiunta({
         </button>
         <button
           type="submit"
+          disabled={
+            formData.strutturaOrigineId === formData.strutturaDestinazioneId
+          }
           className="p-2 rounded-full bg-green-500 hover:bg-green-600 transition flex items-center justify-center"
         >
           <Save size={18} className="text-white" />

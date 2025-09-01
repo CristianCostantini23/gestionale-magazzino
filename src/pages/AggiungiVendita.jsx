@@ -26,7 +26,6 @@ export default function AggiungiVendita() {
   ]);
   const [prodotti, setProdotti] = useState([]);
   const [dataVendita, setDataVendita] = useState("");
-
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState(null);
 
@@ -76,15 +75,7 @@ export default function AggiungiVendita() {
 
   const handleProdottoChange = (index, field, value) => {
     const updated = [...prodottiVendita];
-    if (field === "quantita") {
-      updated[index][field] = parseInt(value, 10);
-    } else if (field === "prezzoUnitario") {
-      updated[index][field] = parseFloat(value);
-    } else if (field === "prodottoId") {
-      updated[index][field] = parseInt(value, 10);
-    } else {
-      updated[index][field] = value;
-    }
+    updated[index][field] = value;
     setProdottiVendita(updated);
   };
 
@@ -109,21 +100,25 @@ export default function AggiungiVendita() {
       await dispatch(
         postVendita({
           strutturaId: parseInt(strutturaId),
-          prodotti: prodottiVendita,
+          prodotti: prodottiVendita.map((p) => ({
+            ...p,
+            quantita: parseInt(p.quantita),
+            prezzoUnitario: parseFloat(p.prezzoUnitario),
+          })),
           dataVendita,
         })
       ).unwrap();
 
+      setSuccessMessage("Vendita registrata con successo!");
+      setTimeout(() => setSuccessMessage(null), 1000);
       setStrutturaId("");
       setProdottiVendita([{ prodottoId: "", quantita: 1, prezzoUnitario: "" }]);
       setDataVendita("");
-
-      setSuccessMessage("Vendita registrata con successo!");
-      setTimeout(() => setSuccessMessage(null), 2000);
     } catch (error) {
       setError(error || "Errore nella registrazione della vendita");
     }
   };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -133,6 +128,7 @@ export default function AggiungiVendita() {
         Nuova Vendita
       </h1>
 
+      {/* Selezione Struttura */}
       <div>
         <label className="font-semibold flex items-center gap-2 mb-1">
           <Building2 className="w-4 h-4" /> Struttura
@@ -152,6 +148,7 @@ export default function AggiungiVendita() {
         </select>
       </div>
 
+      {/* Data Vendita */}
       <div>
         <label className="font-semibold flex items-center gap-2 mb-1">
           <Calendar className="w-4 h-4" /> Data vendita
@@ -165,16 +162,17 @@ export default function AggiungiVendita() {
         />
       </div>
 
+      {/* Lista Prodotti */}
       {prodottiVendita.map((prodotto, index) => {
-        const prodottoInv = prodotti.find((p) => p.id === prodotto.prodottoId);
-
+        const prodottoInv = prodotti.find(
+          (p) => p.id === parseInt(prodotto.prodottoId)
+        );
         return (
           <div
             key={index}
-            className="rounded-lg bg-gray-600 p-3 mb-3 flex flex-col gap-3 shadow 
-                 hover:shadow-xl hover:shadow-gray-700 hover:scale-105 
-                 transition-all duration-200 ease-in-out"
+            className="rounded-lg bg-gray-600 p-3 mb-3 flex flex-col gap-3 shadow hover:shadow-xl hover:shadow-gray-700 hover:scale-105 transition-all duration-200 ease-in-out"
           >
+            {/* Prodotto */}
             <div>
               <label className="flex items-center gap-1 mb-1">
                 <Package className="w-4 h-4" /> Prodotto
@@ -196,6 +194,7 @@ export default function AggiungiVendita() {
               </select>
             </div>
 
+            {/* Quantità */}
             <div>
               <label className="flex items-center gap-1 mb-1">
                 <Hash className="w-4 h-4" /> Quantità
@@ -218,6 +217,7 @@ export default function AggiungiVendita() {
               )}
             </div>
 
+            {/* Prezzo Unitario */}
             <div>
               <label className="flex items-center gap-1 mb-1">
                 <DollarSign className="w-4 h-4" /> Prezzo unitario
@@ -234,6 +234,7 @@ export default function AggiungiVendita() {
               />
             </div>
 
+            {/* Rimuovi Prodotto */}
             {prodottiVendita.length > 1 && (
               <button
                 type="button"
@@ -247,10 +248,12 @@ export default function AggiungiVendita() {
         );
       })}
 
+      {/* Totale */}
       <div className="text-right font-semibold flex justify-end items-center gap-1">
         <Receipt className="w-4 h-4" /> Totale parziale: € {calcolaTotale()}
       </div>
 
+      {/* Aggiungi Prodotto */}
       <button
         type="button"
         onClick={addProdotto}
@@ -259,6 +262,7 @@ export default function AggiungiVendita() {
         <PlusCircle className="w-4 h-4 text-white" /> Aggiungi prodotto
       </button>
 
+      {/* Messaggi */}
       {error && <div className="text-red-400 text-sm">{error}</div>}
       {successMessage && (
         <div className="w-full p-3 mb-2 rounded bg-green-600 text-white text-center">
@@ -266,6 +270,7 @@ export default function AggiungiVendita() {
         </div>
       )}
 
+      {/* Bottoni */}
       <div className="flex gap-3 justify-end">
         <button
           type="button"
@@ -279,7 +284,6 @@ export default function AggiungiVendita() {
         >
           <CircleX size={18} className="text-white" />
         </button>
-
         <button
           type="submit"
           disabled={!isFormValido()}

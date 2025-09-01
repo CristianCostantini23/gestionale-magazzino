@@ -23,7 +23,11 @@ export default function AggiungiMovimento() {
           setProdotti(
             res.data
               .filter((p) => p.quantita > 0)
-              .map((p) => ({ value: p.id, label: p.nome }))
+              .map((p) => ({
+                value: p.id,
+                label: p.nome,
+                quantita: p.quantita,
+              }))
           )
         )
         .catch(() => setProdotti([]));

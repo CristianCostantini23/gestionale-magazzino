@@ -48,12 +48,12 @@ export function ListaDettagli({ dati, campi, hasError, errorMessage }) {
           <div className="table-row-group font-body bg-gray-50">
             {dati.prodotti.map((p, idx) => (
               <div
-                key={p}
+                key={idx}
                 className={`table-row ${
                   idx % 2 === 0 ? "bg-gray-100" : "bg-gray-200"
                 } hover:bg-gray-300 transition`}
               >
-                <div className="table-cell px-4 py-2">{p.nome}</div>
+                <div className="table-cell px-4 py-2">{p.nome_prodotto}</div>
                 <div className="table-cell px-4 py-2">{p.codice}</div>
                 <div className="table-cell px-4 py-2">{p.quantita}</div>
                 {p.prezzo_unitario && (

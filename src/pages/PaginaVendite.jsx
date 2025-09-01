@@ -22,7 +22,10 @@ export default function PaginaVendite() {
     {
       label: "Dettagli vendita",
       icon: <ListCollapse size={18} />,
-      onClick: (item) => console.log("Dettagli", item),
+      onClick: (item) => {
+        console.log(item);
+        navigate(`/vendite/${item.id}`);
+      },
     },
   ];
 

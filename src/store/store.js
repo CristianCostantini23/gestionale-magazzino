@@ -6,6 +6,7 @@ import inventariReducer from "./slices/sliceInventari.js";
 import scarichiReducer from "./slices/sliceScarichi.js";
 import movimentiReducer from "./slices/sliceMovimenti.js";
 import prodottiReducer from "./slices/sliceProdotti.js";
+import homepageReducer from "./slices/sliceHompage.js";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     scarichi: scarichiReducer,
     movimenti: movimentiReducer,
     prodotti: prodottiReducer,
+    homepage: homepageReducer,
   },
 });

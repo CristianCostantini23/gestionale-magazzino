@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import ConfirmModal from "../components/ConfirmModal";
-import ListaRisultati from "../components/ListaRisultati";
+import ConfirmModal from "../components/ConfirmModal.jsx";
+import ListaRisultati from "../components/ListaRisultati.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { Barcode, Edit, Trash2 } from "lucide-react";
 import {

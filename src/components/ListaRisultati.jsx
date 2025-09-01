@@ -159,6 +159,15 @@ export default function ListaRisultati({
             </div>
           </div>
         </div>
+
+        <input
+          type="text"
+          placeholder="Cerca..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="p-2 block mx-auto rounded-3xl bg-gradient-to-r from-gray-700 to-gray-500 text-white border border-gray-300 w-[50%] h-[10%] text-center"
+        />
+
         <p className="text-xl text-center font-body">{errorMessage}</p>
         {isAddFormShowing && (
           <div
