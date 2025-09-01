@@ -47,7 +47,7 @@ export async function fetchDettagliScaricoById(req, res) {
       `
         SELECT 
           s.id,
-          p.nome,
+          p.nome AS nome_prodotto,
           p.codice,
           s.quantita,
           s.prezzo_unitario

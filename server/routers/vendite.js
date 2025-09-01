@@ -21,6 +21,6 @@ routerVendite.post(
   dateFormatter,
   postVendita
 );
-routerVendite.get("/:id", checkIdMiddleware, getDettagliVendita);
+routerVendite.get("/:venditaId", checkIdMiddleware, getDettagliVendita);
 
 export default routerVendite;

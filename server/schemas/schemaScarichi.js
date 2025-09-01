@@ -14,7 +14,7 @@ export const schemaScarichi = z.object({
       required_error: "La data di scarico è obbligatoria",
       invalid_type_error: "La data deve essere una stringa",
     })
-    .regex(/^\d{2}-\d{2}-\d{4}$/, "La data deve essere in formato GG-MM-AAAA"),
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "La data deve essere in formato AAAA-MM-GG"),
 
   fornitoreId: z
     .number({

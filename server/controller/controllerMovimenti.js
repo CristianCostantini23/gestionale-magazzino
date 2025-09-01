@@ -18,7 +18,6 @@ export async function fetchAllMovimenti(req, res) {
         FROM trasferimenti_merce t
         JOIN strutture so ON t.struttura_origine_id = so.id
         JOIN strutture sd ON t.struttura_destinazione_id = sd.id;
-
     `);
 
     if (!rows[0] || rows.length <= 0) {
@@ -50,7 +49,7 @@ export async function getDettagliMovimentoById(req, res) {
       `
         SELECT 
           t.id,
-          p.nome,
+          p.nome AS nome_prodotto,
           p.codice,
           t.quantita
         FROM trasferimento_merce_dettaglio t
@@ -84,14 +83,12 @@ export async function getDettagliMovimentoById(req, res) {
       return res.status(404).json({ error: "intestazione non trovata" });
     }
 
-    res
-      .status(200)
-      .json({
-        struttura_origine: intestazione[0].struttura_origine,
-        struttura_destinazione: intestazione[0].struttura_destinazione,
-        data_trasferimento: intestazione[0].data_trasferimento,
-        prodotti: rows,
-      });
+    res.status(200).json({
+      struttura_origine: intestazione[0].struttura_origine,
+      struttura_destinazione: intestazione[0].struttura_destinazione,
+      data_trasferimento: intestazione[0].data_trasferimento,
+      prodotti: rows,
+    });
   } catch (error) {
     handleControllerError(error, res);
   }

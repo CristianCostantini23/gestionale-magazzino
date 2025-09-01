@@ -2,8 +2,17 @@ export const dateFormatter = (req, res, next) => {
   if (req.body) {
     const formatInputDate = (dateStr) => {
       if (!dateStr) return null;
-      const [day, month, year] = dateStr.split("-");
-      return `${year}-${month}-${day}`;
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        return dateStr;
+      }
+
+      if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+        const [day, month, year] = dateStr.split("-");
+        return `${year}-${month}-${day}`;
+      }
+
+      return null;
     };
 
     if (req.body.dataScarico) {
@@ -22,6 +31,8 @@ export const dateFormatter = (req, res, next) => {
     const formatOutputDate = (dateStr) => {
       if (!dateStr) return null;
       const d = new Date(dateStr);
+      if (isNaN(d)) return null;
+
       const day = String(d.getDate()).padStart(2, "0");
       const month = String(d.getMonth() + 1).padStart(2, "0");
       const year = d.getFullYear();
